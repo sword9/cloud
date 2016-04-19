@@ -1,6 +1,8 @@
 package com.hochan.sqlite.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -10,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -35,9 +39,18 @@ public class SearchDialogFragment extends DialogFragment implements View.OnClick
     private Button btnShowAll, btnSearchID, btnSearchName, btnSearchTowerNum, btnSearchWorkState;
     private EditText edSearch;
 
+    private AnimationSet mDialogInAnim;
+    private View mRootView;
+
     public static SearchDialogFragment newInstance(){
         SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
         return searchDialogFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mContext = getContext();
     }
 
     @Nullable
@@ -45,13 +58,17 @@ public class SearchDialogFragment extends DialogFragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.search_dialog_layout, container, false);
+        mDialogInAnim = (AnimationSet) AnimationUtils.loadAnimation(mContext, R.anim.modal_in);
+        mRootView = getDialog().getWindow().getDecorView().findViewById(android.R.id.content);
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));//注意此处
         getDialog().getWindow().setLayout((int) (MyApplication.mWidthOfDialog), WindowManager.LayoutParams.WRAP_CONTENT);//这2行,和上面的一样,注意顺序就行;
+        mRootView.startAnimation(mDialogInAnim);
     }
 
     @Override

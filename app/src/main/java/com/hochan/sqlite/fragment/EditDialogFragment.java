@@ -1,6 +1,8 @@
 package com.hochan.sqlite.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -93,10 +95,10 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
     @Override
     public void onStart() {
         super.onStart();
-        //getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));//注意此处
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));//注意此处
         //mRootView.startAnimation();
-        mRootView.startAnimation(mDialogInAnim);
         getDialog().getWindow().setLayout((int) (MyApplication.mWidthOfDialog), WindowManager.LayoutParams.WRAP_CONTENT);//这2行,和上面的一样,注意顺序就行;
+        mRootView.startAnimation(mDialogInAnim);
     }
 
     @Override

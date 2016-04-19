@@ -43,7 +43,7 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.content_show, container, false);
+        View view = inflater.inflate(R.layout.worker_list_layout, container, false);
         return view;
     }
 

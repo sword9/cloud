@@ -20,12 +20,13 @@ import com.hochan.sqlite.sql.DataHelper;
 
 import org.w3c.dom.Text;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, EditDialogFragment.OnDialogListener{
 
     private Button btnSearch, btnAdd;
     private WorkersListFragment mWorkersListFragment;
     private LinearLayout llButton;
     private TextView tvText;
+    private EditDialogFragment mAddDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,19 +95,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 searchDialog.show(getSupportFragmentManager(), "search");
                 return;
             case R.id.btn_add:
-                //intent.setClass(this, AddActivity.class);
-                EditDialogFragment addDialog = EditDialogFragment.newInstance(EditDialogFragment.ADD_DIALOG);
-                addDialog.setOnDialogListener(new EditDialogFragment.OnDialogListener() {
-                    @Override
-                    public void clicked(int index, Worker worker) {
-                        DataHelper tmpDataHelper = new DataHelper(getApplicationContext());
-                        Long result = tmpDataHelper.addData(worker);
-                        worker.setmID(String.valueOf(result));
-                        Toast.makeText(getApplicationContext(), "添加成功：" + result, Toast.LENGTH_SHORT).show();
-                        mWorkersListFragment.add(worker);
-                    }
-                });
-                addDialog.show(getSupportFragmentManager(), "add");
+                mAddDialog = EditDialogFragment.newInstance(EditDialogFragment.ADD_DIALOG);
+                mAddDialog.setOnDialogListener(this);
+                mAddDialog.show(getSupportFragmentManager(), "adddialog");
                 return;
         }
         startActivity(intent);
@@ -115,11 +106,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        mAddDialog = (EditDialogFragment) getSupportFragmentManager().findFragmentByTag("adddialog");
+        if(mAddDialog != null){
+            mAddDialog.setOnDialogListener(this);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void clicked(int index, Worker worker, int position) {
+        DataHelper tmpDataHelper = new DataHelper(getApplicationContext());
+        Long result = tmpDataHelper.addData(worker);
+        worker.setmID(String.valueOf(result));
+        Toast.makeText(getApplicationContext(), "添加成功：" + result, Toast.LENGTH_SHORT).show();
+        mWorkersListFragment.add(worker);
     }
 }

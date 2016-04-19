@@ -68,7 +68,7 @@ public class SearchDialogFragment extends DialogFragment implements View.OnClick
         super.onStart();
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));//注意此处
         getDialog().getWindow().setLayout((int) (MyApplication.mWidthOfDialog), WindowManager.LayoutParams.WRAP_CONTENT);//这2行,和上面的一样,注意顺序就行;
-        mRootView.startAnimation(mDialogInAnim);
+        //mRootView.startAnimation(mDialogInAnim);
     }
 
     @Override

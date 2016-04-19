@@ -4,62 +4,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorBackground">
+    android:background="@drawable/shape_rounded_rectangle"
+    android:padding="15dp">
 
     <EditText
         android:id="@+id/ed_search"
         style="@style/EditTextStyle"
         android:layout_height="60dp"
         android:layout_weight="0"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:hint="输入关键字"
         />
 
     <Button
         android:id="@+id/btn_search_id"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="按ID查询"
-        android:textSize="15sp"
-        android:background="@drawable/item_selector"
-        android:layout_gravity="center"/>
+        style="@style/DialogButtonStyle"
+        android:text="按ID查询"/>
 
     <Button
         android:id="@+id/btn_search_name"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="按姓名查询"
-        android:textSize="15sp"
-        android:background="@drawable/item_selector"
-        android:layout_gravity="center"/>
+        style="@style/DialogButtonStyle"
+        android:text="按姓名查询"/>
 
     <Button
         android:id="@+id/btn_search_towernum"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="按电塔编号查询"
-        android:textSize="15sp"
-        android:background="@drawable/item_selector"
-        android:layout_gravity="center"/>
+        style="@style/DialogButtonStyle"
+        android:text="按电塔编号查询" />
 
     <Button
         android:id="@+id/btn_search_workstate"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        style="@style/DialogButtonStyle"
         android:text="按工作状况查询"
-        android:textSize="15sp"
-        android:background="@drawable/item_selector"
-        android:layout_gravity="center"/>
+        />
 
     <Button
         android:id="@+id/btn_show_all"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:padding="10dp"
-        android:text="显示全部"
-        android:textSize="15sp"
-        android:background="@drawable/item_selector"
-        android:layout_gravity="center"/>
+        style="@style/DialogButtonStyle"
+        android:text="显示全部"/>
 
 </LinearLayout>

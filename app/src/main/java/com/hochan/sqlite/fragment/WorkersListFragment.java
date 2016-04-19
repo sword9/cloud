@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hochan.sqlite.MainActivity;
 import com.hochan.sqlite.R;
 import com.hochan.sqlite.adapter.ShowAdapter;
 import com.hochan.sqlite.data.Worker;
@@ -28,9 +29,10 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/4/12.
  */
-public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapterListener, View.OnClickListener{
+public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapterListener,
+        View.OnClickListener, EditDialogFragment.OnDialogListener{
 
-    public final static String TAG = "list_fragment";
+    public final static String TAG = "WorkersListFragment: ";
 
     private View mView;
     private RecyclerView recyShow;
@@ -43,6 +45,7 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
 
     private Button btnDeleteMore, btnUploadMore, btnCancleMore;
     private LinearLayout llChooseMore;
+    private EditDialogFragment mEditDialogFragment;
 
     public static WorkersListFragment newInstance(){
         WorkersListFragment workersListFragment = new WorkersListFragment();
@@ -142,40 +145,13 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
 
     @Override
     public void shortClick(final int position) {
-        EditDialogFragment editDialogFragment = EditDialogFragment.newInstance(EditDialogFragment.DELETEEDIT_DIALOG, mWorkers.get(position).getmName(),
+        mEditDialogFragment = EditDialogFragment.newInstance(EditDialogFragment.DELETEEDIT_DIALOG, mWorkers.get(position).getmName(),
                 mWorkers.get(position).getmPhoneNumber(),
                 mWorkers.get(position).getmTowerNumber(),
-                mWorkers.get(position).getmWorkState());
-        editDialogFragment.setOnDialogListener(new EditDialogFragment.OnDialogListener() {
-            @Override
-            public void clicked(int index, Worker worker) {
-                switch (index) {
-                    case EditDialogFragment.DELETE:
-                        DataHelper dataHelper = new DataHelper(mContext);
-                        dataHelper.deleteByID(Integer.parseInt(mWorkers.get(position).getmID()));
-                        Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
-                        mWorkers.remove(position);
-                        //mShowAdapter.notifyDataSetChanged();
-                        mShowAdapter.notifyItemRemoved(position);
-                        mShowAdapter.notifyItemRangeChanged(position, mWorkers.size());
-                        //mShowAdapter.notifyDataSetChanged();
-                        break;
-                    case EditDialogFragment.EDIT:
-                        DataHelper tmpDataHelper = new DataHelper(mContext);
-                        tmpDataHelper.updateByID(Integer.parseInt(mWorkers.get(position).getmID()), worker);
-                        Toast.makeText(mContext, "修改成功", Toast.LENGTH_SHORT).show();
-                        mWorkers.get(position).setmName(worker.getmName());
-                        mWorkers.get(position).setmPhoneNumber(worker.getmPhoneNumber());
-                        mWorkers.get(position).setmTowerNumber(worker.getmTowerNumber());
-                        mWorkers.get(position).setmWorkState(worker.getmWorkState());
-                        mShowAdapter.notifyDataSetChanged();
-                        break;
-                }
-                Toast.makeText(mContext, String.valueOf(index), Toast.LENGTH_SHORT).show();
-            }
-        });
-        editDialogFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "dialog");
-
+                mWorkers.get(position).getmWorkState(),
+                position);
+        mEditDialogFragment.setOnDialogListener(this);
+        mEditDialogFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "editdialog");
     }
 
     @Override
@@ -266,8 +242,48 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
         this.mShowFragmentListener = fragmentListener;
     }
 
+    @Override
+    public void clicked(int index, Worker worker, int position) {
+        switch (index) {
+            case EditDialogFragment.DELETE:
+                DataHelper dataHelper = new DataHelper(mContext);
+                dataHelper.deleteByID(Integer.parseInt(mWorkers.get(position).getmID()));
+                Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+                mWorkers.remove(position);
+                //mShowAdapter.notifyDataSetChanged();
+                mShowAdapter.notifyItemRemoved(position);
+                mShowAdapter.notifyItemRangeChanged(position, mWorkers.size());
+                //mShowAdapter.notifyDataSetChanged();
+                break;
+            case EditDialogFragment.EDIT:
+                DataHelper tmpDataHelper = new DataHelper(mContext);
+                tmpDataHelper.updateByID(Integer.parseInt(mWorkers.get(position).getmID()), worker);
+                Toast.makeText(mContext, "修改成功", Toast.LENGTH_SHORT).show();
+                mWorkers.get(position).setmName(worker.getmName());
+                mWorkers.get(position).setmPhoneNumber(worker.getmPhoneNumber());
+                mWorkers.get(position).setmTowerNumber(worker.getmTowerNumber());
+                mWorkers.get(position).setmWorkState(worker.getmWorkState());
+                mShowAdapter.notifyDataSetChanged();
+                break;
+        }
+    }
+
     public interface ShowFragmentListener{
         public void chooseMore(boolean isChooseMore);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println(TAG+"onResume!");
+        if (mEditDialogFragment != null){
+            mEditDialogFragment.setOnDialogListener(this);
+        }else{
+            mEditDialogFragment = (EditDialogFragment) ((MainActivity)mContext).getSupportFragmentManager().findFragmentByTag("editdialog");
+            if(mEditDialogFragment != null){
+                mEditDialogFragment.setOnDialogListener(this);
+            }
+            System.out.println(TAG+"mEditDialogFragment is null!");
+        }
+    }
 }

@@ -1,8 +1,6 @@
 package com.hochan.sqlite.adapter;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.graphics.drawable.LayerDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +20,7 @@ public class ShowAdapter extends RecyclerView.Adapter{
 
     private Context mContext;
     private List<Worker> mWorkers;
+    private boolean mChooseMore = false;
 
     public ShowAdapter(Context mContext, List<Worker> mWorkers) {
         this.mContext = mContext;
@@ -42,6 +41,13 @@ public class ShowAdapter extends RecyclerView.Adapter{
         showViewHolder.tvPhoneNumber.setText(mWorkers.get(position).getmPhoneNumber());
         showViewHolder.tvTowerNumber.setText(mWorkers.get(position).getmTowerNumber());
         showViewHolder.tvWorkState.setText(mWorkers.get(position).getmWorkState());
+        if(mWorkers.get(position).mIsChoosed){
+            showViewHolder.llItemBackground.setBackgroundColor(mContext.getResources().getColor(R.color.colorBackground));
+            showViewHolder.vBeChoose.setVisibility(View.VISIBLE);
+        }else{
+            showViewHolder.llItemBackground.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.item_selector));
+            showViewHolder.vBeChoose.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -52,10 +58,11 @@ public class ShowAdapter extends RecyclerView.Adapter{
         return mWorkers.size();
     }
 
-    class ShowViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ShowViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
         public TextView tvId, tvName, tvPhoneNumber, tvTowerNumber, tvWorkState;
         public LinearLayout llItemBackground;
+        public View vBeChoose;
 
         public ShowViewHolder(View itemView) {
             super(itemView);
@@ -66,13 +73,42 @@ public class ShowAdapter extends RecyclerView.Adapter{
             tvWorkState = (TextView) itemView.findViewById(R.id.tv_work_state);
             llItemBackground = (LinearLayout) itemView.findViewById(R.id.ll_item_background);
             llItemBackground.setOnClickListener(this);
+            llItemBackground.setOnLongClickListener(this);
+            vBeChoose = (View) itemView.findViewById(R.id.v_bechoosed);
         }
 
         @Override
         public void onClick(View v) {
             if(mAdapterListener != null){
-                mAdapterListener.longclick(getPosition());
+                if(mChooseMore){
+                    if(mWorkers.get(getPosition()).mIsChoosed){
+                        v.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.item_selector));
+                        v.findViewById(R.id.v_bechoosed).setVisibility(View.GONE);
+                        mAdapterListener.cancleChoose(getPosition(), v);
+                        mWorkers.get(getPosition()).mIsChoosed = false;
+                    }else{
+                        v.setBackgroundColor(mContext.getResources().getColor(R.color.colorBackground));
+                        v.findViewById(R.id.v_bechoosed).setVisibility(View.VISIBLE);
+                        mAdapterListener.chooseMore(getPosition(), v);
+                        mWorkers.get(getPosition()).mIsChoosed = true;
+                    }
+                    return;
+                }
+                mAdapterListener.shortClick(getPosition());
             }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if(mAdapterListener != null && !mChooseMore){
+                mAdapterListener.chooseMore(getPosition(), v);
+                v.setBackgroundColor(mContext.getResources().getColor(R.color.colorBackground));
+                v.findViewById(R.id.v_bechoosed).setVisibility(View.VISIBLE);
+                mWorkers.get(getPosition()).mIsChoosed = true;
+                mChooseMore = true;
+                return true;
+            }
+            return false;
         }
     }
 
@@ -83,6 +119,12 @@ public class ShowAdapter extends RecyclerView.Adapter{
     }
 
     public interface OnAdapterListener{
-        public void longclick(int position);
+        public void shortClick(int position);
+        public void chooseMore(int position, View v);
+        public void cancleChoose(int position, View v);
+    }
+
+    public void setmChooseMore(boolean mChooseMore) {
+        this.mChooseMore = mChooseMore;
     }
 }

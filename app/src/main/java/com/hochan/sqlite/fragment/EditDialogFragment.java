@@ -37,7 +37,7 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
 
     private View mView, mRootView;
     private Context mContext;
-    private Button btnDelete, btnEdit, btnCancle, btnPicture;
+    private Button btnDelete, btnEdit, btnCancle, btnPicture, btnUpload;
     private EditText edName, edPhoneNumber, edTowerNumber, edWorkState;
     private String mName, mPhoneNumber, mTowerNumber, mWorkState;
     private int mTag;
@@ -111,6 +111,7 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
         btnEdit = (Button) mView.findViewById(R.id.btn_edit);
         btnCancle = (Button) mView.findViewById(R.id.btn_cancle);
         btnPicture = (Button) mView.findViewById(R.id.btn_picture);
+        btnUpload = (Button) mView.findViewById(R.id.btn_upload);
 
         edName = (EditText) mView.findViewById(R.id.ed_name);
         edPhoneNumber = (EditText) mView.findViewById(R.id.ed_phone_number);
@@ -123,9 +124,11 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
         if(getArguments().getInt(TAG) == ADD_DIALOG){
             btnDelete.setVisibility(View.GONE);
             btnEdit.setText("添加");
+            btnUpload.setVisibility(View.GONE);
             //Toast.makeText(mContext, "增加", Toast.LENGTH_LONG).show();
         }else{
             btnDelete.setVisibility(View.VISIBLE);
+            btnUpload.setVisibility(View.VISIBLE);
             btnEdit.setText("修改");
             btnDelete.setOnClickListener(this);
             btnCancle.setOnClickListener(this);

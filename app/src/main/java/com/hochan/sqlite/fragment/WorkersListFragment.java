@@ -11,6 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hochan.sqlite.R;
@@ -19,12 +22,13 @@ import com.hochan.sqlite.data.Worker;
 import com.hochan.sqlite.sql.DataHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/4/12.
  */
-public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapterListener{
+public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapterListener, View.OnClickListener{
 
     public final static String TAG = "list_fragment";
 
@@ -34,6 +38,11 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
     private Context mContext;
     private List<Worker> mWorkers;
     private LinearLayoutManager mLayoutManager;
+    private TextView tvChoosedItems;
+    private List<Integer> mChoosedItems;
+
+    private Button btnDeleteMore, btnUploadMore, btnCancleMore;
+    private LinearLayout llChooseMore;
 
     public static WorkersListFragment newInstance(){
         WorkersListFragment workersListFragment = new WorkersListFragment();
@@ -52,6 +61,18 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
         super.onActivityCreated(savedInstanceState);
         mView = getView();
         mContext = getContext();
+
+        btnDeleteMore = (Button) mView.findViewById(R.id.btn_delete_more);
+        btnUploadMore = (Button) mView.findViewById(R.id.btn_upload_more);
+        btnCancleMore = (Button) mView.findViewById(R.id.btn_cancle_more);
+        btnCancleMore.setOnClickListener(this);
+        btnDeleteMore.setOnClickListener(this);
+        btnUploadMore.setOnClickListener(this);
+
+        mChoosedItems = new ArrayList<>();
+
+        tvChoosedItems = (TextView) mView.findViewById(R.id.tv_choosed_items);
+        llChooseMore = (LinearLayout) mView.findViewById(R.id.ll_choose_more);
 
         recyShow = (RecyclerView) mView.findViewById(R.id.recy_show);
         mLayoutManager = new LinearLayoutManager(mContext);
@@ -120,7 +141,7 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
     }
 
     @Override
-    public void longclick(final int position) {
+    public void shortClick(final int position) {
         EditDialogFragment editDialogFragment = EditDialogFragment.newInstance(EditDialogFragment.DELETEEDIT_DIALOG, mWorkers.get(position).getmName(),
                 mWorkers.get(position).getmPhoneNumber(),
                 mWorkers.get(position).getmTowerNumber(),
@@ -128,7 +149,7 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
         editDialogFragment.setOnDialogListener(new EditDialogFragment.OnDialogListener() {
             @Override
             public void clicked(int index, Worker worker) {
-                switch (index){
+                switch (index) {
                     case EditDialogFragment.DELETE:
                         DataHelper dataHelper = new DataHelper(mContext);
                         dataHelper.deleteByID(Integer.parseInt(mWorkers.get(position).getmID()));
@@ -153,7 +174,94 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
                 Toast.makeText(mContext, String.valueOf(index), Toast.LENGTH_SHORT).show();
             }
         });
-        editDialogFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), "dialog");
+        editDialogFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "dialog");
 
     }
+
+    @Override
+    public void chooseMore(int position, View v) {
+        mShowFragmentListener.chooseMore(true);
+        llChooseMore.setVisibility(View.VISIBLE);
+        tvChoosedItems.setVisibility(View.VISIBLE);
+        mChoosedItems.add(position);
+        mWorkers.get(position).mIsChoosed = true;
+        notifyTextViewDataChange();
+    }
+
+    @Override
+    public void cancleChoose(int position, View v) {
+
+        for(int i = 0; i < mChoosedItems.size(); i++){
+            if(position == mChoosedItems.get(i)) {
+                mChoosedItems.remove(i);
+                mWorkers.get(position).mIsChoosed = false;
+            }
+        }
+        notifyTextViewDataChange();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_cancle_more:
+                mShowAdapter.setmChooseMore(false);
+                llChooseMore.setVisibility(View.GONE);
+                tvChoosedItems.setVisibility(View.GONE);
+                mShowFragmentListener.chooseMore(false);
+                notifyTextViewDataChange();
+                for(int i = 0; i < mChoosedItems.size(); i++){
+                    mWorkers.get(mChoosedItems.get(i)).mIsChoosed = false;
+                }
+                mShowAdapter.notifyDataSetChanged();
+                mChoosedItems.clear();
+                break;
+            case R.id.btn_delete_more:
+                DataHelper dataHelper = new DataHelper(mContext);
+                for(int i = 0; i < mChoosedItems.size(); i++){
+                    dataHelper.deleteByID(Integer.parseInt(mWorkers.get(mChoosedItems.get(i)).getmID()));
+                    //mShowAdapter.notifyItemRemoved(mChoosedItems.get(i));
+                    //mShowAdapter.notifyItemRangeChanged(mChoosedItems.get(i), mWorkers.size());
+                }
+//                Collections.sort(mChoosedItems);
+//                for(int i = mChoosedItems.size()-1; i >= 0; i--){
+//                    System.out.println(String.valueOf(mChoosedItems.get(i)));
+//                    mWorkers.remove(mChoosedItems.size());
+//                    System.out.println(String.valueOf(mWorkers.size()));
+//                }
+                for(int i = 0; i < mWorkers.size(); i++){
+                    if (mWorkers.get(i).mIsChoosed){
+                        mWorkers.remove(i);
+                        i -= i;
+                    }
+                }
+                mShowAdapter.notifyDataSetChanged();
+                mShowAdapter.setmChooseMore(false);
+                llChooseMore.setVisibility(View.GONE);
+                tvChoosedItems.setVisibility(View.GONE);
+                mShowFragmentListener.chooseMore(false);
+                mChoosedItems.clear();
+                Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void notifyTextViewDataChange(){
+        StringBuilder sb = new StringBuilder("已选条目ID：");
+        for(int i = 0; i < mChoosedItems.size(); i++){
+            sb.append(mWorkers.get(mChoosedItems.get(i)).getmID());
+            sb.append(" ");
+        }
+        tvChoosedItems.setText(sb.toString());
+    }
+
+    private ShowFragmentListener mShowFragmentListener;
+
+    public void setmShowFragmentListener(ShowFragmentListener fragmentListener){
+        this.mShowFragmentListener = fragmentListener;
+    }
+
+    public interface ShowFragmentListener{
+        public void chooseMore(boolean isChooseMore);
+    }
+
 }

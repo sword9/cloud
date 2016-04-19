@@ -37,6 +37,16 @@
             android:background="@drawable/item_selector"/>
 
         <Button
+            android:id="@+id/btn_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="同步"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:background="@drawable/item_selector"/>
+
+        <Button
             android:id="@+id/btn_cancle"
             android:layout_width="wrap_content"
             android:layout_height="50dp"

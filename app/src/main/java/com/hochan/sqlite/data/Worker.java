@@ -10,6 +10,8 @@ public class Worker {
     private String mTowerNumber;
     private String mWorkState;
 
+    public boolean mIsChoosed;
+
     public Worker() {
     }
 

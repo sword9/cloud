@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hochan.sqlite.data.Worker;
@@ -14,10 +16,14 @@ import com.hochan.sqlite.fragment.SearchDialogFragment;
 import com.hochan.sqlite.fragment.WorkersListFragment;
 import com.hochan.sqlite.sql.DataHelper;
 
+import org.w3c.dom.Text;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Button btnSearch, btnAdd, btnClear;
     private WorkersListFragment mWorkersListFragment;
+    private LinearLayout llButton;
+    private TextView tvText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +38,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSearch.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
         btnClear.setOnClickListener(this);
+
+        llButton = (LinearLayout) findViewById(R.id.ll_button);
+        tvText = (TextView) findViewById(R.id.tv_text);
+
         mWorkersListFragment = (WorkersListFragment) getSupportFragmentManager().findFragmentByTag(WorkersListFragment.TAG);
         if(mWorkersListFragment == null) {
             mWorkersListFragment = WorkersListFragment.newInstance();
+            mWorkersListFragment.setmShowFragmentListener(new WorkersListFragment.ShowFragmentListener() {
+                @Override
+                public void chooseMore(boolean isChooseMore) {
+                    if(isChooseMore){
+                        tvText.setVisibility(View.GONE);
+                        llButton.setVisibility(View.GONE);
+                    }
+                    else{
+                        tvText.setVisibility(View.VISIBLE);
+                        llButton.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
             getSupportFragmentManager().beginTransaction().add(R.id.rl_workers_list, mWorkersListFragment, WorkersListFragment.TAG).commit();
         }
     }

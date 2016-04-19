@@ -17,15 +17,17 @@
         android:layout_weight="1"></RelativeLayout>
 
     <TextView
+        android:id="@+id/tv_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="点击条目删除或修改"
+        android:text="点击条目删除或修改、长按多选"
         android:textSize="12sp"
         android:paddingTop="2dp"
         android:paddingLeft="5dp"
         android:textColor="@color/colorTextLight"/>
 
     <LinearLayout
+        android:id="@+id/ll_button"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"

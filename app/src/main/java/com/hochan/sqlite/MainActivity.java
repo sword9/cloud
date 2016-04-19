@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -20,7 +22,7 @@ import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private Button btnSearch, btnAdd, btnClear;
+    private Button btnSearch, btnAdd;
     private WorkersListFragment mWorkersListFragment;
     private LinearLayout llButton;
     private TextView tvText;
@@ -31,13 +33,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                DataHelper dataHelper = new DataHelper(getApplicationContext());
+                dataHelper.clearTable(getApplicationContext());
+                mWorkersListFragment.clear();
+                Toast.makeText(getApplicationContext(), "已清空表的记录", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
 
         btnSearch = (Button) findViewById(R.id.btn_search);
         btnAdd = (Button) findViewById(R.id.btn_add);
-        btnClear = (Button) findViewById(R.id.btn_clear);
+
         btnSearch.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
-        btnClear.setOnClickListener(this);
 
         llButton = (LinearLayout) findViewById(R.id.ll_button);
         tvText = (TextView) findViewById(R.id.tv_text);
@@ -97,12 +108,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 addDialog.show(getSupportFragmentManager(), "add");
                 return;
-            case R.id.btn_clear:
-                DataHelper dataHelper = new DataHelper(getApplicationContext());
-                dataHelper.clearTable(getApplicationContext());
-                mWorkersListFragment.clear();
-                Toast.makeText(getApplicationContext(), "已清空表的记录", Toast.LENGTH_LONG).show();
-                return;
         }
         startActivity(intent);
     }
@@ -110,5 +115,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }

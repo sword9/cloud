@@ -198,6 +198,12 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
             }
         }
         notifyTextViewDataChange();
+        if(mChoosedItems.size() == 0){
+            mShowAdapter.setmChooseMore(false);
+            llChooseMore.setVisibility(View.GONE);
+            tvChoosedItems.setVisibility(View.GONE);
+            mShowFragmentListener.chooseMore(false);
+        }
     }
 
     @Override
@@ -222,12 +228,12 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
                     //mShowAdapter.notifyItemRemoved(mChoosedItems.get(i));
                     //mShowAdapter.notifyItemRangeChanged(mChoosedItems.get(i), mWorkers.size());
                 }
-//                Collections.sort(mChoosedItems);
-//                for(int i = mChoosedItems.size()-1; i >= 0; i--){
-//                    System.out.println(String.valueOf(mChoosedItems.get(i)));
-//                    mWorkers.remove(mChoosedItems.size());
-//                    System.out.println(String.valueOf(mWorkers.size()));
-//                }
+                /*Collections.sort(mChoosedItems);
+                for(int i = mChoosedItems.size()-1; i >= 0; i--){
+                    System.out.println(String.valueOf(mChoosedItems.get(i)));
+                    mWorkers.remove(mChoosedItems.size());
+                    System.out.println(String.valueOf(mWorkers.size()));
+                }*/
                 for(int i = 0; i < mWorkers.size(); i++){
                     if (mWorkers.get(i).mIsChoosed){
                         mWorkers.remove(i);

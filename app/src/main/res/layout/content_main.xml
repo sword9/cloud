@@ -44,11 +44,5 @@
             style="@style/MainButtonStyle"
             android:text="@string/add"
             android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/btn_clear"
-            style="@style/MainButtonStyle"
-            android:text="@string/clear"
-            android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>

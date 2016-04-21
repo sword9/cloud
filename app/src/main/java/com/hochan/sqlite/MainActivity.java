@@ -2,6 +2,8 @@ package com.hochan.sqlite;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -17,16 +19,26 @@ import com.hochan.sqlite.fragment.EditDialogFragment;
 import com.hochan.sqlite.fragment.SearchDialogFragment;
 import com.hochan.sqlite.fragment.WorkersListFragment;
 import com.hochan.sqlite.sql.DataHelper;
+import com.hochan.sqlite.tools.ClientThread;
 
 import org.w3c.dom.Text;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, EditDialogFragment.OnDialogListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+        EditDialogFragment.OnDialogListener, android.support.v7.widget.Toolbar.OnMenuItemClickListener{
 
     private Button btnSearch, btnAdd;
     private WorkersListFragment mWorkersListFragment;
     private LinearLayout llButton;
     private TextView tvText;
     private EditDialogFragment mAddDialog;
+    private ClientThread mClientThread;
+
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                DataHelper dataHelper = new DataHelper(getApplicationContext());
-                dataHelper.clearTable(getApplicationContext());
-                mWorkersListFragment.clear();
-                Toast.makeText(getApplicationContext(), "已清空表的记录", Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
+        toolbar.setOnMenuItemClickListener(this);
 
         btnSearch = (Button) findViewById(R.id.btn_search);
         btnAdd = (Button) findViewById(R.id.btn_add);
@@ -125,5 +128,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         worker.setmID(String.valueOf(result));
         Toast.makeText(getApplicationContext(), "添加成功：" + result, Toast.LENGTH_SHORT).show();
         mWorkersListFragment.add(worker);
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_clear:
+                DataHelper dataHelper = new DataHelper(getApplicationContext());
+                dataHelper.clearTable(getApplicationContext());
+                mWorkersListFragment.clear();
+                Toast.makeText(getApplicationContext(), "已清空表的记录", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.action_connect:
+                mClientThread = new ClientThread(mHandler);
+                new Thread(mClientThread).start();
+                break;
+        }
+        return true;
     }
 }

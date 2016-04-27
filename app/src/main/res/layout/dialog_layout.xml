@@ -22,19 +22,23 @@
             <Button
                 android:id="@+id/btn_delete"
                 style="@style/DialogButtonStyle"
+                android:layout_height="50dp"
                 android:text="删除"/>
             <Button
                 android:id="@+id/btn_edit"
                 style="@style/DialogButtonStyle"
+                android:layout_height="50dp"
                 android:text="修改" />
 
             <Button
                 android:id="@+id/btn_upload"
                 style="@style/DialogButtonStyle"
+                android:layout_height="50dp"
                 android:text="同步"/>
             <Button
                 android:id="@+id/btn_cancle"
                 style="@style/DialogButtonStyle"
+                android:layout_height="50dp"
                 android:text="取消"/>
         </LinearLayout>
     </LinearLayout>

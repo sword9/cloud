@@ -20,5 +20,5 @@
     <string name="title_activity_delete">删除</string>
     <string name="title_activity_edit">修改</string>
     <string name="title_activity_show">查看数据库</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_file">查看个人文件</string>
 </resources>

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -14,14 +16,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hochan.sqlite.data.Worker;
 import com.hochan.sqlite.fragment.EditDialogFragment;
+import com.hochan.sqlite.fragment.LoginFragment;
 import com.hochan.sqlite.fragment.SearchDialogFragment;
 import com.hochan.sqlite.fragment.WorkersListFragment;
 import com.hochan.sqlite.sql.DataHelper;
 import com.hochan.sqlite.tools.ClientThread;
+import com.hochan.sqlite.tools.SQLHttpClient;
 
 import org.w3c.dom.Text;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         EditDialogFragment.OnDialogListener, android.support.v7.widget.Toolbar.OnMenuItemClickListener{
@@ -39,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.handleMessage(msg);
         }
     };
+    private LoginFragment mLoginFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +82,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
             getSupportFragmentManager().beginTransaction().add(R.id.rl_workers_list, mWorkersListFragment, WorkersListFragment.TAG).commit();
+        }
+
+        String str = "{\"id\":\"13349015\", \"name\":\"陈振东\", \"phone_num\":\"15622271342\"}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Worker worker = objectMapper.readValue(str, Worker.class);
+            System.out.println("worker.getmID():"+worker.getmID());
+            System.out.println("worker.getmName():"+worker.getmName());
+            System.out.println("worker.getmPhoneNumber():"+worker.getmPhoneNumber());
+            System.out.println("worker.getmTowerNumber():"+worker.getmTowerNumber());
+            System.out.println("worker.getmWorkState():"+worker.getmWorkState());
+
+            String s = objectMapper.writeValueAsString(worker);
+            System.out.println(s);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -140,8 +164,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(getApplicationContext(), "已清空表的记录", Toast.LENGTH_LONG).show();
                 break;
             case R.id.action_connect:
-                mClientThread = new ClientThread(mHandler);
-                new Thread(mClientThread).start();
+                mLoginFragment = (LoginFragment) getSupportFragmentManager().findFragmentByTag("login");
+                if(mLoginFragment == null)
+                    mLoginFragment = LoginFragment.newInstance();
+                mLoginFragment.show(getSupportFragmentManager(), "login");
+                break;
+            case R.id.action_file:
+                Intent intent = new Intent(this, FileActivity.class);
+                startActivity(intent);
                 break;
         }
         return true;

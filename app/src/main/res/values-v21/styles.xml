@@ -1,8 +1,17 @@
-<resources>>
+<resources>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
+    </style>
+
+    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Required for Lollipop. -->
+        <item name="android:overlapAnchor">true</item>
+        <item name="android:dropDownVerticalOffset">5.0dip</item>
+        <item name="android:dropDownHorizontalOffset">-5.0dip</item>
     </style>
 </resources>

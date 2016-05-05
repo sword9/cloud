@@ -8,12 +8,20 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/colorBackground</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
     </style>
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="popupMenuStyle">@style/AppTheme.PopupOverlay</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:dropDownVerticalOffset">-56dp</item>
+    </style>
 
     <style name="MainButtonStyle">
         <item name="android:textSize">15sp</item>
@@ -64,10 +72,24 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
     </style>
+
     <style name="AddWorkStateRadioButtonStyle">
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/colorTextLight</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+    <!-- Widget ListPopUpWindow Style-->
+    <style name="Widget.App.ListPopupWindow" parent="@style/Widget.AppCompat.Light.PopupMenu">
+        <item name="android:dropDownVerticalOffset">-36px</item>
+    </style>
+
+    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Required for pre-Lollipop. -->
+        <item name="overlapAnchor">true</item>
+        <item name="android:dropDownVerticalOffset">40.0dip</item>
+        <item name="android:dropDownHorizontalOffset">-10dp</item>
     </style>
 </resources>

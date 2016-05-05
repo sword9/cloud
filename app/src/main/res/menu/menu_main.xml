@@ -1,13 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
 
     <item
         android:id="@+id/action_connect"
-        android:title="连接服务器"
+        android:title="获取个人基本数据"
         android:orderInCategory="100"
         app:showAsAction="never">
     </item>
+
+    <item
+        android:id="@+id/action_file"
+        android:title="查看个人云端文件"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_clear"

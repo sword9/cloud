@@ -11,6 +11,12 @@
     </item>
 
     <item
+        android:id="@+id/action_sync"
+        android:title="同步所有数据"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_file"
         android:title="查看个人云端文件"
         android:orderInCategory="100"

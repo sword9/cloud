@@ -12,8 +12,10 @@ import com.hochan.sqlite.fragment.SearchDialogFragment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/4/12.
@@ -35,53 +37,20 @@ public class DataHelper {
 
     public List<Worker> getWorkersInfo(){
         Cursor cursor=db.query(SqliteHelper.TB_NAME, null, null, null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
-        cursor.moveToFirst();
-        List<Worker> workers = new ArrayList<>();
-        while (!cursor.isAfterLast()){
-            Worker worker = new Worker(String.valueOf(cursor.getInt(0)),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getString(3),
-                    cursor.getString(4));
-                    workers.add(worker);
-            cursor.moveToNext();
-        }
-        return workers;
+        return getWorkersByCursor(cursor);
     }
 
     public List<Worker> getWorkerByID(int id1, int id2) {
         Cursor cursor=db.query(SqliteHelper.TB_NAME, null,
                 SqliteHelper.ID + ">=" + id1 + " and " + SqliteHelper.ID + "<=" + id2,
                 null, null, null, SearchDialogFragment.SEARCH_ORDERBY,null);
-        cursor.moveToFirst();
-        List<Worker> workers = new ArrayList<>();
-        while (!cursor.isAfterLast()){
-            Worker worker = new Worker(String.valueOf(cursor.getInt(0)),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getString(3),
-                    cursor.getString(4));
-            workers.add(worker);
-            cursor.moveToNext();
-        }
-        return workers;
+        return getWorkersByCursor(cursor);
     }
 
     public List<Worker> getWorkersByName(String name){
         Cursor cursor=db.query(SqliteHelper.TB_NAME, null,
                 SqliteHelper.NAME + " = \"" + name + "\"", null, null, null, SearchDialogFragment.SEARCH_ORDERBY,null);
-        cursor.moveToFirst();
-        List<Worker> workers = new ArrayList<>();
-        while (!cursor.isAfterLast()){
-            Worker worker = new Worker(String.valueOf(cursor.getInt(0)),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getString(3),
-                    cursor.getString(4));
-            workers.add(worker);
-            cursor.moveToNext();
-        }
-        return workers;
+        return getWorkersByCursor(cursor);
     }
 
     public List<Worker> getWorkersByTowerNumber(String towerNum){
@@ -92,18 +61,7 @@ public class DataHelper {
         Cursor cursor=db.query(SqliteHelper.TB_NAME, null,
                 SqliteHelper.TOWER_NUMBER + ">=" + search_tower_range[0] + " and " + SqliteHelper.TOWER_NUMBER + "<=" + search_tower_range[1],
                 null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
-        cursor.moveToFirst();
-        List<Worker> workers = new ArrayList<>();
-        while (!cursor.isAfterLast()){
-            Worker worker = new Worker(String.valueOf(cursor.getInt(0)),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getString(3),
-                    cursor.getString(4));
-            workers.add(worker);
-            cursor.moveToNext();
-        }
-        return workers;
+        return getWorkersByCursor(cursor);
     }
 
     public List<Worker> getWorkersByWorkState(String workstate){
@@ -111,16 +69,7 @@ public class DataHelper {
                 null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
         cursor.moveToFirst();
         List<Worker> workers = new ArrayList<>();
-        while (!cursor.isAfterLast()){
-            Worker worker = new Worker(String.valueOf(cursor.getInt(0)),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getString(3),
-                    cursor.getString(4));
-            workers.add(worker);
-            cursor.moveToNext();
-        }
-        return workers;
+        return getWorkersByCursor(cursor);
     }
 
     //判断worker表中的是否包含某个ID的记录
@@ -188,6 +137,20 @@ public class DataHelper {
         return result;
     }
 
+    //返回时间戳
+    public Map<String, String> getTimeStamp(){
+        Map<String, String> timeStamps = new HashMap<>();
+        String[] columns = new String[]{SqliteHelper.ID, SqliteHelper.TIME_STAMP};
+        Cursor cursor = db.query(SqliteHelper.TB_NAME, columns, null, null, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()){
+            timeStamps.put(cursor.getString(cursor.getColumnIndex(SqliteHelper.ID)),
+                    cursor.getString(cursor.getColumnIndex(SqliteHelper.TIME_STAMP)));
+            cursor.moveToNext();
+        }
+        return timeStamps;
+    }
+
     public void clearTable(Context context){
         dbHelper.onUpgrade(db, DB_VERSION, DB_VERSION);
     }
@@ -197,5 +160,21 @@ public class DataHelper {
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+    private List<Worker> getWorkersByCursor(Cursor cursor){
+        cursor.moveToFirst();
+        List<Worker> workers = new ArrayList<>();
+        while (!cursor.isAfterLast()){
+            Worker worker = new Worker(
+                    String.valueOf(cursor.getInt(cursor.getColumnIndex(SqliteHelper.ID))),
+                    cursor.getString(cursor.getColumnIndex(SqliteHelper.NAME)),
+                    cursor.getString(cursor.getColumnIndex(SqliteHelper.PHONE_NUMBER)),
+                    cursor.getString(cursor.getColumnIndex(SqliteHelper.TOWER_NUMBER)),
+                    cursor.getString(cursor.getColumnIndex(SqliteHelper.WORK_STATE)));
+            workers.add(worker);
+            cursor.moveToNext();
+        }
+        return workers;
     }
 }

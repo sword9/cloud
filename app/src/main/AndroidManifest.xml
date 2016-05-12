@@ -26,6 +26,8 @@
             android:name=".FileActivity"
             android:label="@string/title_activity_file"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".multi_images_selector.MultiImageSelectorActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

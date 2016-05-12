@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hochan.sqlite.data.Worker;
 import com.hochan.sqlite.fragment.EditDialogFragment;
@@ -29,6 +30,8 @@ import com.hochan.sqlite.tools.SQLHttpClient;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         EditDialogFragment.OnDialogListener, android.support.v7.widget.Toolbar.OnMenuItemClickListener{
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.handleMessage(msg);
         }
     };
-    private LoginFragment mLoginFragment;
+    private LoginFragment mLoginFragment, mSyncFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,14 +167,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(getApplicationContext(), "已清空表的记录", Toast.LENGTH_LONG).show();
                 break;
             case R.id.action_connect:
-                mLoginFragment = (LoginFragment) getSupportFragmentManager().findFragmentByTag("login");
+                mLoginFragment = (LoginFragment) getSupportFragmentManager()
+                        .findFragmentByTag(LoginFragment.TAG_LOGIN);
                 if(mLoginFragment == null)
-                    mLoginFragment = LoginFragment.newInstance();
-                mLoginFragment.show(getSupportFragmentManager(), "login");
+                    mLoginFragment = LoginFragment.newInstance(LoginFragment.TAG_LOGIN);
+                mLoginFragment.show(getSupportFragmentManager(), LoginFragment.TAG_LOGIN);
                 break;
             case R.id.action_file:
                 Intent intent = new Intent(this, FileActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.action_sync:
+                mSyncFragment = (LoginFragment) getSupportFragmentManager()
+                        .findFragmentByTag(LoginFragment.TAG_SYNC);
+                if(mSyncFragment == null)
+                    mSyncFragment = LoginFragment.newInstance(LoginFragment.TAG_SYNC);
+                mSyncFragment.show(getSupportFragmentManager(), LoginFragment.TAG_SYNC);
                 break;
         }
         return true;

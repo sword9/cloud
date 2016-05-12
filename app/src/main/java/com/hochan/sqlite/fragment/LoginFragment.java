@@ -15,10 +15,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hochan.sqlite.R;
 import com.hochan.sqlite.data.Worker;
+import com.hochan.sqlite.sql.DataHelper;
 import com.hochan.sqlite.tools.MyApplication;
 import com.hochan.sqlite.tools.SQLHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -29,8 +33,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.ContentType;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
@@ -43,9 +50,19 @@ public class LoginFragment extends DialogFragment implements View.OnClickListene
     private Context mContext;
     private Button btnLogin;
     private EditText edName, edPassword, edUrl;
+    private String mTag;
+    private TextView tvProcess, tvTitle;
 
-    public static LoginFragment newInstance(){
+    public static final String TAG_LOGIN = "login";
+    public static final String TAG_SYNC = "sync";
+
+    private static final String TYPE = "type";
+
+    public static LoginFragment newInstance(String type){
         LoginFragment loginFragment = new LoginFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(TYPE, type);
+        loginFragment.setArguments(bundle);
         return loginFragment;
     }
 
@@ -76,12 +93,49 @@ public class LoginFragment extends DialogFragment implements View.OnClickListene
         mContext = getActivity();
         llLogin = (LinearLayout) mView.findViewById(R.id.ll_login);
         llProgress = (LinearLayout) mView.findViewById(R.id.ll_progress);
-        btnLogin = (Button) mView.findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(this);
+        mTag = getArguments().getString(TYPE);
+        tvProcess = (TextView) mView.findViewById(R.id.tv_prosess);
+        tvTitle = (TextView) mView.findViewById(R.id.tv_title);
+        if(mTag.equals(TAG_SYNC)) {
+            llLogin.setVisibility(View.GONE);
+            llProgress.setVisibility(View.VISIBLE);
+            tvTitle.setText("同步所有数据");
+            tvProcess.setText("正在同步...");
+            setCancelable(false);
+            doSync();
+        }else if(mTag.equals(TAG_LOGIN)){
+            tvTitle.setText("获取个人基本数据");
+            llLogin.setVisibility(View.VISIBLE);
+            llProgress.setVisibility(View.GONE);
+            btnLogin = (Button) mView.findViewById(R.id.btn_login);
+            btnLogin.setOnClickListener(this);
+            edName = (EditText) mView.findViewById(R.id.ed_name);
+            edPassword = (EditText) mView.findViewById(R.id.ed_password);
+            edUrl = (EditText) mView.findViewById(R.id.ed_url);
+        }
+    }
 
-        edName = (EditText) mView.findViewById(R.id.ed_name);
-        edPassword = (EditText) mView.findViewById(R.id.ed_password);
-        edUrl = (EditText) mView.findViewById(R.id.ed_url);
+    private void doSync() {
+        DataHelper tmpDataHelper = new DataHelper(mContext);
+        Map<String, String> timeStamps = new HashMap<>();
+        timeStamps = tmpDataHelper.getTimeStamp();
+        ObjectMapper mapper = new ObjectMapper();
+        String str = "";
+        try {
+            str = mapper.writeValueAsString(timeStamps);
+            System.out.println(str);
+            StringEntity stringEntity = new StringEntity(str, ContentType.APPLICATION_JSON);
+            SQLHttpClient.post(mContext, "", stringEntity, RequestParams.APPLICATION_JSON,
+                    new JsonHttpResponseHandler(){
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            super.onSuccess(statusCode, headers, response);
+                        }
+                    });
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -98,7 +152,8 @@ public class LoginFragment extends DialogFragment implements View.OnClickListene
             Toast.makeText(mContext, "请输入Url", Toast.LENGTH_SHORT).show();
             return;
         }
-        llLogin.setVisibility(View.INVISIBLE);
+        setCancelable(false);
+        llLogin.setVisibility(View.GONE);
         llProgress.setVisibility(View.VISIBLE);
         try {
             JSONObject jsonObject = new JSONObject();

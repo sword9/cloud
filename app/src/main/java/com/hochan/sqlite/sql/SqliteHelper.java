@@ -24,11 +24,11 @@ public class SqliteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + "(" +
-                ID + " integer primary key autoincrement," +   //0
-                NAME + " varchar," +                           //1
-                PHONE_NUMBER + " varchar," +                   //2
-                TOWER_NUMBER + " varchar," +                   //3
-                WORK_STATE + " varchar," +                     //4
+                ID + " integer primary key autoincrement," +
+                NAME + " varchar," +
+                PHONE_NUMBER + " varchar," +
+                TOWER_NUMBER + " varchar," +
+                WORK_STATE + " varchar," +
                 TIME_STAMP + " timestamp NOT NULL" +
                 ")");
     }

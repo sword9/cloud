@@ -16,7 +16,9 @@ import cz.msebera.android.httpclient.HttpEntity;
  */
 public class SQLHttpClient{
 
-    private static String BASE_URL = "https://192.168.1.150/";
+    public static String BASE_URL = "https://192.168.1.150/";
+
+    public static String SYNC_URL = "";
 
     private static AsyncHttpClient mClient = new AsyncHttpClient();
 

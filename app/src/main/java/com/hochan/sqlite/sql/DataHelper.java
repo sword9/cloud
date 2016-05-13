@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.hochan.sqlite.data.Worker;
 import com.hochan.sqlite.fragment.SearchDialogFragment;
+import com.hochan.sqlite.tools.SQLHttpClient;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class DataHelper {
         db = dbHelper.getWritableDatabase();
     }
 
-    public List<Worker> getWorkersInfo(){
+    public List<Worker> getAllWorkersInfo(){
         Cursor cursor=db.query(SqliteHelper.TB_NAME, null, null, null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
         return getWorkersByCursor(cursor);
     }
@@ -47,95 +48,103 @@ public class DataHelper {
         return getWorkersByCursor(cursor);
     }
 
-    public List<Worker> getWorkersByName(String name){
-        Cursor cursor=db.query(SqliteHelper.TB_NAME, null,
-                SqliteHelper.NAME + " = \"" + name + "\"", null, null, null, SearchDialogFragment.SEARCH_ORDERBY,null);
-        return getWorkersByCursor(cursor);
-    }
+//    public List<Worker> getWorkersByName(String name){
+//        Cursor cursor=db.query(SqliteHelper.TB_NAME, null,
+//                SqliteHelper.NAME + " = \"" + name + "\"", null, null, null, SearchDialogFragment.SEARCH_ORDERBY,null);
+//        return getWorkersByCursor(cursor);
+//    }
 
-    public List<Worker> getWorkersByTowerNumber(String towerNum){
-        String[] search_tower_range = new String[]{towerNum,towerNum};
-        if (towerNum.contains("-")){
-            search_tower_range = towerNum.split("-");
-        }
-        Cursor cursor=db.query(SqliteHelper.TB_NAME, null,
-                SqliteHelper.TOWER_NUMBER + ">=" + search_tower_range[0] + " and " + SqliteHelper.TOWER_NUMBER + "<=" + search_tower_range[1],
-                null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
-        return getWorkersByCursor(cursor);
-    }
+//    public List<Worker> getWorkersByTowerNumber(String towerNum){
+//        String[] search_tower_range = new String[]{towerNum,towerNum};
+//        if (towerNum.contains("-")){
+//            search_tower_range = towerNum.split("-");
+//        }
+//        Cursor cursor=db.query(SqliteHelper.TB_NAME, null,
+//                SqliteHelper.TOWER_NUMBER + ">=" + search_tower_range[0] + " and " + SqliteHelper.TOWER_NUMBER + "<=" + search_tower_range[1],
+//                null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
+//        return getWorkersByCursor(cursor);
+//    }
 
-    public List<Worker> getWorkersByWorkState(String workstate){
-        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, SqliteHelper.WORK_STATE + "=" + workstate,
-                null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
-        cursor.moveToFirst();
-        List<Worker> workers = new ArrayList<>();
-        return getWorkersByCursor(cursor);
-    }
+//    public List<Worker> getWorkersByWorkState(String workstate){
+//        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, SqliteHelper.WORK_STATE + "=" + workstate,
+//                null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
+//        cursor.moveToFirst();
+//        List<Worker> workers = new ArrayList<>();
+//        return getWorkersByCursor(cursor);
+//    }
 
     //判断worker表中的是否包含某个ID的记录
-    public Boolean HaveUserInfo(int id)
+    public Boolean haveUserInfoId(String id)
     {
         Boolean b=false;
-        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, SqliteHelper.ID + "=" + id, null, null, null, null);
+        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, SqliteHelper.ID + "=?", new String[]{id}, null, null, null);
         b=cursor.moveToFirst();
         cursor.close();
         return b;
     }
 
-    //判断worker表中的是否包含某个NAME的记录
-    public Boolean HaveUserInfo(String name)
-    {
-        Boolean b=false;
-        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, SqliteHelper.NAME + "=" + name, null, null, null, null);
-        b=cursor.moveToFirst();
-        cursor.close();
-        return b;
-    }
+//    //判断worker表中的是否包含某个NAME的记录
+//    public Boolean haveUserInfo(String name)
+//    {
+//        Boolean b=false;
+//        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, SqliteHelper.NICKNAME + "=" + name, null, null, null, null);
+//        b=cursor.moveToFirst();
+//        cursor.close();
+//        return b;
+//    }
 
-    public Long addData(Worker worker){
+    public long addData(Worker worker){
         ContentValues values = new ContentValues();
-        values.put(SqliteHelper.NAME, worker.getmName());
-        values.put(SqliteHelper.PHONE_NUMBER, worker.getmPhoneNumber());
-        values.put(SqliteHelper.TOWER_NUMBER, worker.getmTowerNumber());
-        values.put(SqliteHelper.WORK_STATE, worker.getmWorkState());
+        values.put(SqliteHelper.NICKNAME, worker.getmName());
+        values.put(SqliteHelper.PASSWORD, worker.getmPassword());
+        //values.put(SqliteHelper.TOWER_NUMBER, worker.getmTowerNumber());
+        //values.put(SqliteHelper.WORK_STATE, worker.getmWorkState());
         //set time stamp;
-        values.put(SqliteHelper.TIME_STAMP, getDateTime());
-        Long result = db.insert(SqliteHelper.TB_NAME, "null", values);
+        values.put(SqliteHelper.TIME_STAMP, worker.getmDateTime());
+        long result = 0;
+        if(haveUserInfoId(worker.getmID())){
+            return db.update(SqliteHelper.TB_NAME, values, SqliteHelper.ID + "=?", new String[]{worker.getmID()});
+        }else{
+            values.put(SqliteHelper.ID, worker.getmID());
+            return db.insert(SqliteHelper.TB_NAME, "null", values);
+        }
+    }
 
-        return result;
+    public void addDatas(List<Worker> workers){
+        for(Worker worker : workers)
+            addData(worker);
     }
 
     public int deleteByID(int id){
         int result = db.delete(SqliteHelper.TB_NAME, SqliteHelper.ID + "=" + id, null);
-
         return result;
     }
+//
+//    public int deleteByName(String name){
+//        int result = db.delete(SqliteHelper.TB_NAME, SqliteHelper.NAME+ "=" + name, null);
+//        return result;
+//    }
 
-    public int deleteByName(String name){
-        int result = db.delete(SqliteHelper.TB_NAME, SqliteHelper.NAME+ "=" + name, null);
-        return result;
-    }
-
-    public int updateByID(int id, Worker worker){
-        ContentValues values = new ContentValues();
-        if(!TextUtils.isEmpty(worker.getmName())){
-            values.put(SqliteHelper.NAME, worker.getmName());
-        }
-        if(!TextUtils.isEmpty(worker.getmPhoneNumber())){
-            values.put(SqliteHelper.PHONE_NUMBER, worker.getmPhoneNumber());
-        }
-        if(!TextUtils.isEmpty(worker.getmTowerNumber())){
-            values.put(SqliteHelper.TOWER_NUMBER, worker.getmTowerNumber());
-        }
-        if(!TextUtils.isEmpty(worker.getmWorkState())){
-            values.put(SqliteHelper.WORK_STATE, worker.getmWorkState());
-        }
-        //set time stamp;
-        values.put(SqliteHelper.TIME_STAMP,getDateTime());
-        int result = db.update(SqliteHelper.TB_NAME, values, SqliteHelper.ID + "=" + id, null);
-
-        return result;
-    }
+//    public int updateByID(int id, Worker worker){
+//        ContentValues values = new ContentValues();
+//        if(!TextUtils.isEmpty(worker.getmName())){
+//            values.put(SqliteHelper.NAME, worker.getmName());
+//        }
+//        if(!TextUtils.isEmpty(worker.getmPhoneNumber())){
+//            values.put(SqliteHelper.PHONE_NUMBER, worker.getmPhoneNumber());
+//        }
+//        if(!TextUtils.isEmpty(worker.getmTowerNumber())){
+//            values.put(SqliteHelper.TOWER_NUMBER, worker.getmTowerNumber());
+//        }
+//        if(!TextUtils.isEmpty(worker.getmWorkState())){
+//            values.put(SqliteHelper.WORK_STATE, worker.getmWorkState());
+//        }
+//        //set time stamp;
+//        values.put(SqliteHelper.TIME_STAMP,getDateTime());
+//        int result = db.update(SqliteHelper.TB_NAME, values, SqliteHelper.ID + "=" + id, null);
+//
+//        return result;
+//    }
 
     //返回时间戳
     public Map<String, String> getTimeStamp(){
@@ -163,18 +172,58 @@ public class DataHelper {
     }
 
     private List<Worker> getWorkersByCursor(Cursor cursor){
+        if(cursor == null || cursor.getCount() < 1)
+            return null;
         cursor.moveToFirst();
         List<Worker> workers = new ArrayList<>();
         while (!cursor.isAfterLast()){
             Worker worker = new Worker(
-                    String.valueOf(cursor.getInt(cursor.getColumnIndex(SqliteHelper.ID))),
-                    cursor.getString(cursor.getColumnIndex(SqliteHelper.NAME)),
-                    cursor.getString(cursor.getColumnIndex(SqliteHelper.PHONE_NUMBER)),
-                    cursor.getString(cursor.getColumnIndex(SqliteHelper.TOWER_NUMBER)),
-                    cursor.getString(cursor.getColumnIndex(SqliteHelper.WORK_STATE)));
+                    cursor.getString(cursor.getColumnIndex(SqliteHelper.ID)),
+                    cursor.getString(cursor.getColumnIndex(SqliteHelper.NICKNAME)),
+                    cursor.getString(cursor.getColumnIndex(SqliteHelper.PASSWORD)));
+            worker.setmDateTime(cursor.getString(
+                    cursor.getColumnIndexOrThrow(SqliteHelper.TIME_STAMP)));
             workers.add(worker);
             cursor.moveToNext();
         }
         return workers;
+    }
+
+    public void close(){
+        dbHelper.close();
+        db.close();
+    }
+
+    public String[][] getAllWorkers(){
+        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, null, null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
+        if(cursor != null && cursor.getCount() > 0){
+            cursor.moveToFirst();
+            String[][] results = new String[cursor.getCount()][4];
+            for(int i = 0; i < cursor.getCount(); i++){
+                results[i][0] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.ID));
+                results[i][1] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.NICKNAME));
+                results[i][2] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.PASSWORD));
+                results[i][3] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.TIME_STAMP));
+                cursor.moveToNext();
+            }
+            return results;
+        }
+        return null;
+    }
+
+    public String[][] getTimeStamps(){
+        String[] columns = new String[]{SqliteHelper.ID, SqliteHelper.TIME_STAMP};
+        Cursor cursor = db.query(SqliteHelper.TB_NAME, columns, null, null, null, null, null);
+        if(cursor != null && cursor.getCount() > 0){
+            cursor.moveToFirst();
+            String[][] results = new String[cursor.getCount()][2];
+            for(int i = 0; i < cursor.getCount(); i++){
+                results[i][0] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.ID));
+                results[i][1] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.TIME_STAMP));
+                cursor.moveToNext();
+            }
+            return results;
+        }
+        return null;
     }
 }

@@ -36,11 +36,11 @@ public class ShowAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ShowViewHolder showViewHolder = (ShowViewHolder) holder;
-        showViewHolder.tvId.setText(String.valueOf(mWorkers.get(position).getmID()));
-        showViewHolder.tvName.setText(mWorkers.get(position).getmName());
-        showViewHolder.tvPhoneNumber.setText(mWorkers.get(position).getmPhoneNumber());
-        showViewHolder.tvTowerNumber.setText(mWorkers.get(position).getmTowerNumber());
-        showViewHolder.tvWorkState.setText(mWorkers.get(position).getmWorkState());
+        showViewHolder.tvId.setText(mWorkers.get(position).getmID());
+        showViewHolder.tvNickName.setText(mWorkers.get(position).getmName());
+        showViewHolder.tvPassdWord.setText(mWorkers.get(position).getmPassword());
+        showViewHolder.tvDateTime.setText(mWorkers.get(position).getmDateTime());
+
         if(mWorkers.get(position).mIsChoosed){
             showViewHolder.llItemBackground.setBackgroundColor(mContext.getResources().getColor(R.color.colorBackground));
             showViewHolder.vBeChoose.setVisibility(View.VISIBLE);
@@ -60,17 +60,16 @@ public class ShowAdapter extends RecyclerView.Adapter{
 
     class ShowViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
-        public TextView tvId, tvName, tvPhoneNumber, tvTowerNumber, tvWorkState;
+        public TextView tvId, tvNickName, tvPassdWord, tvDateTime, tvWorkState;
         public LinearLayout llItemBackground;
         public View vBeChoose;
 
         public ShowViewHolder(View itemView) {
             super(itemView);
             tvId = (TextView) itemView.findViewById(R.id.tv_id);
-            tvName = (TextView) itemView.findViewById(R.id.tv_name);
-            tvPhoneNumber = (TextView) itemView.findViewById(R.id.tv_phone_number);
-            tvTowerNumber = (TextView) itemView.findViewById(R.id.tv_tower_number);
-            tvWorkState = (TextView) itemView.findViewById(R.id.tv_work_state);
+            tvNickName = (TextView) itemView.findViewById(R.id.tv_name);
+            tvPassdWord = (TextView) itemView.findViewById(R.id.tv_password);
+            tvDateTime = (TextView) itemView.findViewById(R.id.tv_date_time);
             llItemBackground = (LinearLayout) itemView.findViewById(R.id.ll_item_background);
             llItemBackground.setOnClickListener(this);
             llItemBackground.setOnLongClickListener(this);

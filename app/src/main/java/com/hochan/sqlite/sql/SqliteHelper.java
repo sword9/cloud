@@ -10,12 +10,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SqliteHelper extends SQLiteOpenHelper {
 
     public final static String TB_NAME = "worker";
-    public final static String ID = "ID";
-    public final static String NAME = "姓名";
-    public final static String PHONE_NUMBER = "电话";
-    public final static String TOWER_NUMBER = "电塔编号";
-    public final static String WORK_STATE = "工作状况";
+    public final static String ID = "_id";
+    //public final static String NAME = "姓名";
+    //public final static String PHONE_NUMBER = "电话";
+    //public final static String TOWER_NUMBER = "电塔编号";
+    //public final static String WORK_STATE = "工作状况";
     public final static String TIME_STAMP = "时间戳";
+    public static final String NICKNAME = "昵称";
+    public static final String PASSWORD = "密码";
 
     public SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -24,11 +26,13 @@ public class SqliteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + "(" +
-                ID + " integer primary key autoincrement," +
-                NAME + " varchar," +
-                PHONE_NUMBER + " varchar," +
-                TOWER_NUMBER + " varchar," +
-                WORK_STATE + " varchar," +
+                ID + " varchar primary key," +
+                NICKNAME + " varchar," +
+                PASSWORD + " varchar," +
+                //NAME + " varchar," +
+                //PHONE_NUMBER + " varchar," +
+                //TOWER_NUMBER + " varchar," +
+                //WORK_STATE + " varchar," +
                 TIME_STAMP + " timestamp NOT NULL" +
                 ")");
     }

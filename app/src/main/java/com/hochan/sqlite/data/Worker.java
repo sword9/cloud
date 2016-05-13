@@ -9,20 +9,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Worker {
-    @JsonProperty("id")
+    @JsonProperty("userId")
     private String mID;
-    @JsonProperty("name")
+    @JsonProperty("nickName")
     private String mName;
-    @JsonProperty("phone_num")
+    @JsonProperty("password")
+    private String mPassword;
+
+    private String mDateTime;
+
+    @JsonIgnore
     private String mPhoneNumber;
-    @JsonProperty("tower_num")
+    @JsonIgnore
     private String mTowerNumber;
-    @JsonProperty("work_state")
+    @JsonIgnore
     private String mWorkState;
     @JsonIgnore
     public boolean mIsChoosed;
 
     public Worker() {
+    }
+
+    public Worker(String mID, String mName, String mPassword) {
+        this.mID = mID;
+        this.mName = mName;
+        this.mPassword = mPassword;
     }
 
     public Worker(String id, String mName, String mPhoneNumber, String mTowerNumber, String mWorkState) {
@@ -33,10 +44,17 @@ public class Worker {
         this.mWorkState = mWorkState;
     }
 
+    public String getmDateTime() {
+        return mDateTime;
+    }
+
+    public void setmDateTime(String mDateTime) {
+        this.mDateTime = mDateTime;
+    }
+
     public String getmID() {
         return mID;
     }
-
 
     public void setmID(String mID) {
         this.mID = mID;
@@ -46,7 +64,6 @@ public class Worker {
         return mName;
     }
 
-
     public void setmName(String mName) {
         this.mName = mName;
     }
@@ -54,7 +71,6 @@ public class Worker {
     public String getmWorkState() {
         return mWorkState;
     }
-
 
     public void setmWorkState(String mWorkState) {
         this.mWorkState = mWorkState;
@@ -64,7 +80,6 @@ public class Worker {
         return mTowerNumber;
     }
 
-
     public void setmTowerNumber(String mTowerNumber) {
         this.mTowerNumber = mTowerNumber;
     }
@@ -73,8 +88,23 @@ public class Worker {
         return mPhoneNumber;
     }
 
-
     public void setmPhoneNumber(String mPhoneNumber) {
         this.mPhoneNumber = mPhoneNumber;
+    }
+
+    public String getmPassword() {
+        return mPassword;
+    }
+
+    public void setmPassword(String mPassword) {
+        this.mPassword = mPassword;
+    }
+
+    public boolean ismIsChoosed() {
+        return mIsChoosed;
+    }
+
+    public void setmIsChoosed(boolean mIsChoosed) {
+        this.mIsChoosed = mIsChoosed;
     }
 }

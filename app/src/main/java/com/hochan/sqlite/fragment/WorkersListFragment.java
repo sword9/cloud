@@ -80,8 +80,11 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
         mLayoutManager = new LinearLayoutManager(mContext);
         recyShow.setLayoutManager(mLayoutManager);
         recyShow.setItemAnimator(new DefaultItemAnimator());
+
         DataHelper dataHelper = new DataHelper(mContext);
-        mWorkers = dataHelper.getWorkersInfo();
+        mWorkers = dataHelper.getAllWorkersInfo();
+        dataHelper.close();
+
         mShowAdapter = new ShowAdapter(mContext, mWorkers);
         mShowAdapter.setOnAdapterListener(this);
         recyShow.setAdapter(mShowAdapter);
@@ -89,7 +92,8 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
 
     public void clear(){
         System.out.println("清空");
-        mWorkers.clear();
+        if(mWorkers != null)
+            mWorkers.clear();
         mShowAdapter = new ShowAdapter(mContext, null);
         recyShow.setAdapter(mShowAdapter);
         //mLayoutManager.removeAllViews();
@@ -104,7 +108,8 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
 
     public void showAll(){
         DataHelper dataHelper = new DataHelper(mContext);
-        mWorkers = dataHelper.getWorkersInfo();
+        mWorkers = dataHelper.getAllWorkersInfo();
+        dataHelper.close();
         mShowAdapter = new ShowAdapter(mContext, mWorkers);
         mShowAdapter.setOnAdapterListener(this);
         recyShow.setAdapter(mShowAdapter);
@@ -126,15 +131,15 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
                     return;
                 }
                 break;
-            case SearchDialogFragment.SEARCH_BY_NAME:
-                results = dataHelper.getWorkersByName(key);
-                break;
-            case SearchDialogFragment.SEARCH_BY_TOWERNUM:
-                results = dataHelper.getWorkersByTowerNumber(key);
-                break;
-            case SearchDialogFragment.SEARCH_BY_WORHSTATE:
-                results = dataHelper.getWorkersByWorkState(key);
-                break;
+//            case SearchDialogFragment.SEARCH_BY_NAME:
+//                results = dataHelper.getWorkersByName(key);
+//                break;
+//            case SearchDialogFragment.SEARCH_BY_TOWERNUM:
+//                results = dataHelper.getWorkersByTowerNumber(key);
+//                break;
+//            case SearchDialogFragment.SEARCH_BY_WORHSTATE:
+//                results = dataHelper.getWorkersByWorkState(key);
+//                break;
         }
         if(results == null)
             Toast.makeText(mContext, "查询结果为空", Toast.LENGTH_SHORT).show();
@@ -260,7 +265,7 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
                 break;
             case EditDialogFragment.EDIT:
                 DataHelper tmpDataHelper = new DataHelper(mContext);
-                tmpDataHelper.updateByID(Integer.parseInt(mWorkers.get(position).getmID()), worker);
+                //tmpDataHelper.updateByID(Integer.parseInt(mWorkers.get(position).getmID()), worker);
                 Toast.makeText(mContext, "修改成功", Toast.LENGTH_SHORT).show();
                 mWorkers.get(position).setmName(worker.getmName());
                 mWorkers.get(position).setmPhoneNumber(worker.getmPhoneNumber());

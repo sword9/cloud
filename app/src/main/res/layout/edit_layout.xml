@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -17,10 +17,10 @@
             android:gravity="bottom">
             <TextView
                 style="@style/AddTextViewStyle"
-                android:text="@string/name"
+                android:text="ID"
                 android:layout_gravity="bottom"/>
             <EditText
-                android:id="@+id/ed_name"
+                android:id="@+id/ed_id"
                 style="@style/EditTextStyle"
                 android:backgroundTint="@color/colorBackground"
                 android:layout_gravity="bottom"/>
@@ -32,9 +32,9 @@
             android:gravity="bottom">
             <TextView
                 style="@style/AddTextViewStyle"
-                android:text="@string/phone_number"/>
+                android:text="昵称"/>
             <EditText
-                android:id="@+id/ed_phone_number"
+                android:id="@+id/ed_nick_name"
                 android:inputType="number"
                 style="@style/EditTextStyle"/>
         </LinearLayout>
@@ -45,13 +45,14 @@
             android:gravity="bottom">
             <TextView
                 style="@style/AddTextViewStyle"
-                android:text="@string/tower_number"/>
+                android:text="密码"/>
             <EditText
-                android:id="@+id/ed_tower_number"
+                android:id="@+id/ed_password"
                 android:inputType="number"
                 style="@style/EditTextStyle"/>
         </LinearLayout>
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
@@ -79,6 +80,7 @@
         </LinearLayout>
 
         <Button
+            android:visibility="gone"
             android:id="@+id/btn_picture"
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -88,6 +90,7 @@
             android:layout_gravity="center"/>
 
         <ImageView
+            android:visibility="gone"
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

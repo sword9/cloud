@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.hochan.sqlite.R;
+import com.hochan.sqlite.sql.SqliteHelper;
 import com.hochan.sqlite.tools.MyApplication;
 
 /**
@@ -33,7 +34,7 @@ public class SearchDialogFragment extends DialogFragment implements View.OnClick
     public final static int SEARCH_BY_TOWERNUM = 2;
     public final static int SEARCH_BY_WORHSTATE = 3;
 
-    public static String SEARCH_ORDERBY = "ID";
+    public static String SEARCH_ORDERBY = SqliteHelper.ID;
 
 
     private View mView;

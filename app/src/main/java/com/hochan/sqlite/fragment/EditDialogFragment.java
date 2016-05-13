@@ -51,8 +51,8 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
     private View mView, mRootView;
     private Context mContext;
     private Button btnDelete, btnEdit, btnCancle, btnPicture, btnUpload;
-    private EditText edName, edPhoneNumber, edTowerNumber; // edWorkState;
-    private RadioGroup rgWorkState;
+    private EditText edId, edNickName, edPassword; // edWorkState;
+    //private RadioGroup rgWorkState;
     private ImageView ivImage;
     private String mName, mPhoneNumber, mTowerNumber, mWorkState;
     private String mWorkStateFromRG = "在岗";
@@ -67,10 +67,10 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
         EditDialogFragment editDialogFragment = new EditDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(TAG, tag);
-        bundle.putString(SqliteHelper.NAME, name);
-        bundle.putString(SqliteHelper.PHONE_NUMBER, phoneNumber);
-        bundle.putString(SqliteHelper.TOWER_NUMBER, towerNumber);
-        bundle.putString(SqliteHelper.WORK_STATE, workState);
+        bundle.putString(SqliteHelper.NICKNAME, name);
+        bundle.putString(SqliteHelper.PASSWORD, phoneNumber);
+        //bundle.putString(SqliteHelper.TOWER_NUMBER, towerNumber);
+        //bundle.putString(SqliteHelper.WORK_STATE, workState);
         bundle.putInt(POSITION, position);
         editDialogFragment.setArguments(bundle);
         return editDialogFragment;
@@ -134,16 +134,14 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
         btnPicture = (Button) mView.findViewById(R.id.btn_picture);
         ivImage = (ImageView) mView.findViewById(R.id.iv_image);
 
-        edName = (EditText) mView.findViewById(R.id.ed_name);
-        edPhoneNumber = (EditText) mView.findViewById(R.id.ed_phone_number);
-        edTowerNumber = (EditText) mView.findViewById(R.id.ed_tower_number);
-//        edWorkState = (EditText) mView.findViewById(R.id.ed_work_state);
-        rgWorkState = (RadioGroup) mView.findViewById(R.id.rg_work_state);
+        edId = (EditText) mView.findViewById(R.id.ed_id);
+        edNickName = (EditText) mView.findViewById(R.id.ed_nick_name);
+        edPassword = (EditText) mView.findViewById(R.id.ed_password);
 
         btnEdit.setOnClickListener(this);
         btnCancle.setOnClickListener(this);
         btnPicture.setOnClickListener(this);
-        rgWorkState.setOnCheckedChangeListener(this);
+        //rgWorkState.setOnCheckedChangeListener(this);
 
         if(getArguments().getInt(TAG) == ADD_DIALOG){
             btnDelete.setVisibility(View.GONE);
@@ -156,11 +154,6 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
             btnEdit.setText("修改");
             btnDelete.setOnClickListener(this);
             btnCancle.setOnClickListener(this);
-            edName.setText(getArguments().getString(SqliteHelper.NAME));
-            edPhoneNumber.setText(getArguments().getString(SqliteHelper.PHONE_NUMBER));
-            edTowerNumber.setText(getArguments().getString(SqliteHelper.TOWER_NUMBER));
-//            edWorkState.setText(getArguments().getString(SqliteHelper.WORK_STATE));
-            //Toast.makeText(mContext, "修改或删除", Toast.LENGTH_LONG).show();
             mPosition = getArguments().getInt(POSITION);
         }
     }
@@ -174,34 +167,31 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
                     dismiss();
                     break;
                 case R.id.btn_edit:
-                    if(TextUtils.isEmpty(edName.getText())){
+                    if(TextUtils.isEmpty(edId.getText())){
                         Toast.makeText(mContext, "请输入姓名", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    if(TextUtils.isEmpty(edPhoneNumber.getText())){
+                    if(TextUtils.isEmpty(edNickName.getText())){
                         Toast.makeText(mContext, "请输入电话", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    if(TextUtils.isEmpty(edTowerNumber.getText())){
+                    if(TextUtils.isEmpty(edPassword.getText())){
                         Toast.makeText(mContext, "请输入电塔编号", Toast.LENGTH_LONG).show();
                         return;
                     }
-//                    if(TextUtils.isEmpty(edWorkState.getText())){
-//                        Toast.makeText(mContext, "请输入工作状况", Toast.LENGTH_LONG).show();
-//                        return;
-//                    }
+
                     Worker worker = new Worker();
-                    worker.setmName(edName.getText().toString());
-                    worker.setmPhoneNumber(edPhoneNumber.getText().toString());
-                    worker.setmTowerNumber(edTowerNumber.getText().toString());
+                    worker.setmName(edId.getText().toString());
+                    worker.setmPhoneNumber(edNickName.getText().toString());
+                    worker.setmTowerNumber(edPassword.getText().toString());
                     worker.setmWorkState(mWorkStateFromRG);
                     mOnDialogListener.clicked(EDIT, worker, mPosition);
                     if(mTag == DELETEEDIT_DIALOG)
                         dismiss();
                     else if(mTag == ADD_DIALOG){
-                        edName.setText("");
-                        edPhoneNumber.setText("");
-                        edTowerNumber.setText("");
+                        edId.setText("");
+                        edNickName.setText("");
+                        edPassword.setText("");
 //                        edWorkState.setText("");
                     }
                     break;

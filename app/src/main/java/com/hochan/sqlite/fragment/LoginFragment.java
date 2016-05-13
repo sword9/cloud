@@ -115,6 +115,7 @@ public class LoginFragment extends DialogFragment implements View.OnClickListene
         }
     }
 
+    //增量同步数据库
     private void doSync() {
         DataHelper tmpDataHelper = new DataHelper(mContext);
         Map<String, String> timeStamps = new HashMap<>();

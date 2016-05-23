@@ -28,6 +28,7 @@ import com.hochan.sqlite.sql.DataHelper;
 import com.hochan.sqlite.tools.ClientThread;
 import com.hochan.sqlite.tools.DataHandler;
 import com.hochan.sqlite.tools.SQLHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -99,22 +100,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
             getSupportFragmentManager().beginTransaction().add(R.id.rl_workers_list, mWorkersListFragment, WorkersListFragment.TAG).commit();
         }
-
-        String str = "{\"id\":\"13349015\", \"name\":\"陈振东\", \"phone_num\":\"15622271342\"}";
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Worker worker = objectMapper.readValue(str, Worker.class);
-            System.out.println("worker.getmID():"+worker.getmID());
-            System.out.println("worker.getmName():"+worker.getmName());
-            System.out.println("worker.getmPhoneNumber():"+worker.getmPhoneNumber());
-            System.out.println("worker.getmTowerNumber():"+worker.getmTowerNumber());
-            System.out.println("worker.getmWorkState():"+worker.getmWorkState());
-
-            String s = objectMapper.writeValueAsString(worker);
-            System.out.println(s);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//
+//        String str = "{\"id\":\"13349015\", \"name\":\"陈振东\", \"phone_num\":\"15622271342\"}";
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try {
+//            Worker worker = objectMapper.readValue(str, Worker.class);
+//            System.out.println("worker.getmID():"+worker.getmID());
+//            System.out.println("worker.getmName():"+worker.getmName());
+//            System.out.println("worker.getmPhoneNumber():"+worker.getmPhoneNumber());
+//            System.out.println("worker.getmTowerNumber():"+worker.getmTowerNumber());
+//            System.out.println("worker.getmWorkState():"+worker.getmWorkState());
+//
+//            String s = objectMapper.writeValueAsString(worker);
+//            System.out.println(s);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -196,25 +197,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
-                        System.out.println(response);
-                        ArrayList<Worker> workers = new ArrayList<Worker>();
-                        String[][] result = DataHandler.jsonArray2StringArray(response);
-                        for(int i = 0; i < result.length; i++){
-                            System.out.println("解析："+result[i][0]);
-                            System.out.println("解析："+result[i][1]);
-                            System.out.println("解析："+result[i][2]);
-                            System.out.println("解析："+result[i][3]);
-                            Worker worker = new Worker();
-                            worker.setmID(result[i][0]);
-                            worker.setmName(result[i][1]);
-                            worker.setmPassword(result[i][2]);
-                            worker.setmDateTime(result[i][3]);
-                            workers.add(worker);
-                        }
-                        DataHelper tmpDataHelper = new DataHelper(MainActivity.this);
-                        tmpDataHelper.addDatas(workers);
-                        tmpDataHelper.close();
-                        mWorkersListFragment.showAll();
+                        updateWorkers(response);
                     }
 
                     @Override
@@ -229,16 +212,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 DataHelper adataHelper = new DataHelper(this);
                 String[][] allWorkers = adataHelper.getAllWorkers();
                 adataHelper.close();
+                uploadWorkers(allWorkers);
+                break;
+            //增量同步
+            case R.id.action_sync_upload:
+                final DataHelper bdataHelper = new DataHelper(this);
+                String[][] results = bdataHelper.getTimeStamps();
                 try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        JSONArray jsonarray = new JSONArray(allWorkers);
-                        System.out.println(jsonarray.toString());
-                        StringEntity stringEntity = new StringEntity(jsonarray.toString());
-                        SQLHttpClient.post(this, SQLHttpClient.UPLOAD_ALL, stringEntity, RequestParams.APPLICATION_JSON,
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                        final JSONArray jsonArray = new JSONArray(results);
+                        StringEntity stringEntity = new StringEntity(jsonArray.toString());
+                        System.out.println(jsonArray.toString());
+                        SQLHttpClient.post(this, SQLHttpClient.SYNC_UPLOAD, stringEntity, RequestParams.APPLICATION_JSON,
                                 new JsonHttpResponseHandler(){
                                     @Override
                                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                                         super.onSuccess(statusCode, headers, response);
+
+                                        if(!response.isNull(0)) {
+                                            System.out.println(response.toString());
+                                            int count = response.length();
+
+                                            System.out.println(count);
+                                            String[] results = new String[count];
+                                            for (int i = 0; i < count; i++) {
+                                                try {
+                                                    results[i] = response.getString(i);
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                            String[][] workers = bdataHelper.getWorkersByIDs(results);
+                                            uploadWorkers(workers);
+                                        }else{
+                                            Toast.makeText(MainActivity.this, "无需上传数据", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 });
                     }
@@ -248,22 +256,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
                 break;
-            //增量同步
-            case R.id.action_sync:
-                DataHelper bdataHelper = new DataHelper(this);
-                String[][] results = bdataHelper.getTimeStamps();
-                bdataHelper.close();
+            case R.id.action_sync_download:
+                DataHelper cdataHelper = new DataHelper(this);
+                String[][] bresults = cdataHelper.getTimeStamps();
+                cdataHelper.close();
                 try {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                        JSONArray jsonArray = new JSONArray(results);
+                        final JSONArray jsonArray = new JSONArray(bresults);
                         StringEntity stringEntity = new StringEntity(jsonArray.toString());
                         System.out.println(jsonArray.toString());
-                        SQLHttpClient.post(this, SQLHttpClient.SYNC_URL, stringEntity, RequestParams.APPLICATION_JSON,
-                                new JsonHttpResponseHandler(){
+                        SQLHttpClient.post(this, SQLHttpClient.SYNC_DOWNLOAD, stringEntity, RequestParams.APPLICATION_JSON,
+                                new JsonHttpResponseHandler() {
                                     @Override
                                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                                         super.onSuccess(statusCode, headers, response);
-                                        System.out.println(response.toString());
+                                        if(!response.isNull(0)) {
+                                            //System.out.println(response.get(0) +" "+ response.length());
+                                            updateWorkers(response);
+                                        }else{
+                                            Toast.makeText(MainActivity.this, "本地数据已是最新数据", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 });
                     }
@@ -272,13 +284,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                //mSyncFragment = (LoginFragment) getSupportFragmentManager()
-                //        .findFragmentByTag(LoginFragment.TAG_SYNC);
-                //if(mSyncFragment == null)
-                //    mSyncFragment = LoginFragment.newInstance(LoginFragment.TAG_SYNC);
-                //mSyncFragment.show(getSupportFragmentManager(), LoginFragment.TAG_SYNC);
                 break;
         }
         return true;
+    }
+
+    private void uploadWorkers(String[][] workers){
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                JSONArray jsonarray = new JSONArray(workers);
+                System.out.println(jsonarray.toString());
+                StringEntity stringEntity = new StringEntity(jsonarray.toString());
+                SQLHttpClient.post(this, SQLHttpClient.UPLOAD_ALL, stringEntity, RequestParams.APPLICATION_JSON,
+                        new AsyncHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                String response = new String(responseBody);
+                                System.out.println(response);
+                                Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                            }
+                        });
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateWorkers(JSONArray jsonArray){
+        if(jsonArray == null)
+            return;
+        System.out.println(jsonArray);
+        ArrayList<Worker> workers = new ArrayList<Worker>();
+        String[][] result = DataHandler.jsonArray2StringArray(jsonArray);
+        for(int i = 0; i < result.length; i++){
+            System.out.println("解析："+result[i][0]);
+            System.out.println("解析："+result[i][1]);
+            System.out.println("解析："+result[i][2]);
+            System.out.println("解析："+result[i][3]);
+            Worker worker = new Worker();
+            worker.setmID(result[i][0]);
+            worker.setmName(result[i][1]);
+            worker.setmPassword(result[i][2]);
+            worker.setmWorkState(result[i][3]);
+            worker.setmDateTime(result[i][4]);
+            workers.add(worker);
+        }
+        DataHelper tmpDataHelper = new DataHelper(MainActivity.this);
+        tmpDataHelper.addDatas(workers);
+        tmpDataHelper.close();
+        mWorkersListFragment.showAll();
     }
 }

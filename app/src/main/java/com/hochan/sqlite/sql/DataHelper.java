@@ -37,7 +37,7 @@ public class DataHelper {
     }
 
     public List<Worker> getAllWorkersInfo(){
-        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, null, null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
+        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, null, null, null, null,null, null);
         return getWorkersByCursor(cursor);
     }
 
@@ -98,7 +98,7 @@ public class DataHelper {
         values.put(SqliteHelper.NICKNAME, worker.getmName());
         values.put(SqliteHelper.PASSWORD, worker.getmPassword());
         //values.put(SqliteHelper.TOWER_NUMBER, worker.getmTowerNumber());
-        //values.put(SqliteHelper.WORK_STATE, worker.getmWorkState());
+        values.put(SqliteHelper.WORK_STATE, worker.getmWorkState());
         //set time stamp;
         values.put(SqliteHelper.TIME_STAMP, worker.getmDateTime());
         long result = 0;
@@ -164,13 +164,6 @@ public class DataHelper {
         dbHelper.onUpgrade(db, DB_VERSION, DB_VERSION);
     }
 
-    private String getDateTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
     private List<Worker> getWorkersByCursor(Cursor cursor){
         if(cursor == null || cursor.getCount() < 1)
             return null;
@@ -181,6 +174,8 @@ public class DataHelper {
                     cursor.getString(cursor.getColumnIndex(SqliteHelper.ID)),
                     cursor.getString(cursor.getColumnIndex(SqliteHelper.NICKNAME)),
                     cursor.getString(cursor.getColumnIndex(SqliteHelper.PASSWORD)));
+            worker.setmWorkState(cursor.getString(
+                    cursor.getColumnIndexOrThrow(SqliteHelper.WORK_STATE)));
             worker.setmDateTime(cursor.getString(
                     cursor.getColumnIndexOrThrow(SqliteHelper.TIME_STAMP)));
             workers.add(worker);
@@ -195,20 +190,38 @@ public class DataHelper {
     }
 
     public String[][] getAllWorkers(){
-        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, null, null, null, null,SearchDialogFragment.SEARCH_ORDERBY, null);
+        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, null, null, null, null,null, null);
         if(cursor != null && cursor.getCount() > 0){
             cursor.moveToFirst();
-            String[][] results = new String[cursor.getCount()][4];
+            String[][] results = new String[cursor.getCount()][5];
             for(int i = 0; i < cursor.getCount(); i++){
                 results[i][0] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.ID));
                 results[i][1] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.NICKNAME));
                 results[i][2] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.PASSWORD));
-                results[i][3] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.TIME_STAMP));
+                results[i][3] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.WORK_STATE));
+                results[i][4] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.TIME_STAMP));
                 cursor.moveToNext();
             }
             return results;
         }
         return null;
+    }
+
+    public String[][] getWorkersByIDs(String[] IDs){
+        String[][] results = new String[IDs.length][5];
+        for(int i = 0; i < IDs.length; i++){
+            Cursor cursor = db.query(SqliteHelper.TB_NAME,
+                    null, SqliteHelper.ID + " = ?", new String[]{IDs[i]}, null, null, null);
+            if(cursor != null && cursor.getCount() > 0){
+                cursor.moveToFirst();
+                results[i][0] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.ID));
+                results[i][1] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.NICKNAME));
+                results[i][2] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.PASSWORD));
+                results[i][3] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.WORK_STATE));
+                results[i][4] = cursor.getString(cursor.getColumnIndexOrThrow(SqliteHelper.TIME_STAMP));
+            }
+        }
+        return results;
     }
 
     public String[][] getTimeStamps(){

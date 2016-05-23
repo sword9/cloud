@@ -40,6 +40,7 @@ public class ShowAdapter extends RecyclerView.Adapter{
         showViewHolder.tvNickName.setText(mWorkers.get(position).getmName());
         showViewHolder.tvPassdWord.setText(mWorkers.get(position).getmPassword());
         showViewHolder.tvDateTime.setText(mWorkers.get(position).getmDateTime());
+        showViewHolder.tvWorkState.setText(mWorkers.get(position).getmWorkState());
 
         if(mWorkers.get(position).mIsChoosed){
             showViewHolder.llItemBackground.setBackgroundColor(mContext.getResources().getColor(R.color.colorBackground));
@@ -69,6 +70,7 @@ public class ShowAdapter extends RecyclerView.Adapter{
             tvId = (TextView) itemView.findViewById(R.id.tv_id);
             tvNickName = (TextView) itemView.findViewById(R.id.tv_name);
             tvPassdWord = (TextView) itemView.findViewById(R.id.tv_password);
+            tvWorkState = (TextView) itemView.findViewById(R.id.tv_work_state);
             tvDateTime = (TextView) itemView.findViewById(R.id.tv_date_time);
             llItemBackground = (LinearLayout) itemView.findViewById(R.id.ll_item_background);
             llItemBackground.setOnClickListener(this);

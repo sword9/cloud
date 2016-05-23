@@ -126,7 +126,7 @@ public class LoginFragment extends DialogFragment implements View.OnClickListene
             str = mapper.writeValueAsString(timeStamps);
             System.out.println(str);
             StringEntity stringEntity = new StringEntity(str, ContentType.APPLICATION_JSON);
-            SQLHttpClient.post(mContext, SQLHttpClient.SYNC_URL, stringEntity, RequestParams.APPLICATION_JSON,
+            SQLHttpClient.post(mContext, SQLHttpClient.BASE_URL, stringEntity, RequestParams.APPLICATION_JSON,
                     new JsonHttpResponseHandler(){
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

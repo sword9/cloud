@@ -18,6 +18,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public final static String TIME_STAMP = "时间戳";
     public static final String NICKNAME = "昵称";
     public static final String PASSWORD = "密码";
+    public static final String WORK_STATE = "工作状态";
 
     public SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -32,7 +33,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 //NAME + " varchar," +
                 //PHONE_NUMBER + " varchar," +
                 //TOWER_NUMBER + " varchar," +
-                //WORK_STATE + " varchar," +
+                WORK_STATE + " varchar," +
                 TIME_STAMP + " timestamp NOT NULL" +
                 ")");
     }

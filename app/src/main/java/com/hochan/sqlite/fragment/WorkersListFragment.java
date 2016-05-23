@@ -153,9 +153,10 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
 
     @Override
     public void shortClick(final int position) {
-        mEditDialogFragment = EditDialogFragment.newInstance(EditDialogFragment.DELETEEDIT_DIALOG, mWorkers.get(position).getmName(),
-                mWorkers.get(position).getmPhoneNumber(),
-                mWorkers.get(position).getmTowerNumber(),
+        mEditDialogFragment = EditDialogFragment.newInstance(EditDialogFragment.DELETEEDIT_DIALOG,
+                mWorkers.get(position).getmName(),
+                mWorkers.get(position).getmID(),
+                mWorkers.get(position).getmPassword(),
                 mWorkers.get(position).getmWorkState(),
                 position);
         mEditDialogFragment.setOnDialogListener(this);
@@ -266,10 +267,12 @@ public class WorkersListFragment extends Fragment implements ShowAdapter.OnAdapt
             case EditDialogFragment.EDIT:
                 DataHelper tmpDataHelper = new DataHelper(mContext);
                 //tmpDataHelper.updateByID(Integer.parseInt(mWorkers.get(position).getmID()), worker);
+                tmpDataHelper.addData(worker);
                 Toast.makeText(mContext, "修改成功", Toast.LENGTH_SHORT).show();
+                mWorkers.get(position).setmID(worker.getmID());
                 mWorkers.get(position).setmName(worker.getmName());
-                mWorkers.get(position).setmPhoneNumber(worker.getmPhoneNumber());
-                mWorkers.get(position).setmTowerNumber(worker.getmTowerNumber());
+                mWorkers.get(position).setmPassword(worker.getmPassword());
+                mWorkers.get(position).setmDateTime(worker.getmDateTime());
                 mWorkers.get(position).setmWorkState(worker.getmWorkState());
                 mShowAdapter.notifyDataSetChanged();
                 break;

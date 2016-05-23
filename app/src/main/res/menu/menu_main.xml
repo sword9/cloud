@@ -23,8 +23,14 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_sync"
-        android:title="增量同步数据"
+        android:id="@+id/action_sync_upload"
+        android:title="增量上传数据"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sync_download"
+        android:title="增量下载数据"
         android:orderInCategory="100"
         app:showAsAction="never" />
 

@@ -36,18 +36,6 @@
         android:id="@+id/tv_password"
         android:text="密码"
         style="@style/ItemTextViewStyle"
-        android:layout_width="100dp"
-        android:textStyle="bold"/>
-
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorBackground"/>
-
-    <TextView
-        android:id="@+id/tv_date_time"
-        android:text="时间戳"
-        style="@style/ItemTextViewStyle"
         android:layout_width="80dp"
         android:textStyle="bold"/>
 
@@ -60,6 +48,18 @@
         android:id="@+id/tv_work_state"
         android:text="工作状态"
         style="@style/ItemTextViewStyle"
+        android:textStyle="bold"/>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground"/>
+
+    <TextView
+        android:id="@+id/tv_date_time"
+        android:text="时间戳"
+        style="@style/ItemTextViewStyle"
+        android:layout_width="150dp"
         android:textStyle="bold"/>
 
     <View

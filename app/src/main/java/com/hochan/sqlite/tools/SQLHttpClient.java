@@ -16,10 +16,11 @@ import cz.msebera.android.httpclient.HttpEntity;
  */
 public class SQLHttpClient{
 
-    public static String BASE_URL = "http://192.168.1.150/";
-    public static String GET_ALL = "http://192.168.1.154:8080/a";
-    public static String UPLOAD_ALL = "";
-    public static String SYNC_URL = "";
+    public final static String BASE_URL = "http://192.168.1.40/";
+    public final static String GET_ALL = "http://192.168.1.140:8080/a";
+    public final static String UPLOAD_ALL = "http://192.168.1.140:8080/b";
+    public final static String SYNC_UPLOAD = "http://192.168.1.140:8080/d";
+    public final static String SYNC_DOWNLOAD = "http://192.168.1.140:8080/c";
 
     private static AsyncHttpClient mClient = new AsyncHttpClient();
 

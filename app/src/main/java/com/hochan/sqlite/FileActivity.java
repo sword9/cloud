@@ -14,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 
+import com.hochan.multi_file_selector.MultiFileSelectorActivity;
+import com.hochan.multi_file_selector.data.File;
 import com.hochan.sqlite.multi_images_selector.MultiImageSelectorActivity;
 import com.hochan.sqlite.multi_images_selector.utils.ScreenUtils;
 
@@ -80,27 +82,36 @@ public class FileActivity extends AppCompatActivity {
         mUploadFileType.add("音频");
         mUploadFileType.add("视频");
         mUploadFileType.add("文本");
+        mUploadFileType.add("全部");
         mFileTypeAdater = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mUploadFileType);
         mListPopupWindow.setAdapter(mFileTypeAdater);
         mListPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = null;
+                Intent intent = new Intent(FileActivity.this, MultiFileSelectorActivity.class);
                 mListPopupWindow.dismiss();
                 switch (position){
                     case 0:
-                        intent = new Intent(FileActivity.this, MultiImageSelectorActivity.class);
-                        // 是否显示拍摄图片
-                        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, false);
-                        // 最大可选择图片数量
-                        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 20);
-                        // 选择模式
-                        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE,
-                                MultiImageSelectorActivity.MODE_MULTI);
-                        // 默认选择
+                        intent.putExtra(MultiFileSelectorActivity.TYPE_SELECT, File.TYPE_IMAGE);
+                        startActivityForResult(intent, File.TYPE_IMAGE);
+                        break;
+                    case 1:
+                        intent.putExtra(MultiFileSelectorActivity.TYPE_SELECT, File.TYPE_AUDIO);
+                        startActivityForResult(intent, File.TYPE_AUDIO);
+                        break;
+                    case 2:
+                        intent.putExtra(MultiFileSelectorActivity.TYPE_SELECT, File.TYPE_VIDEO);
+                        startActivityForResult(intent, File.TYPE_VIDEO);
+                        break;
+                    case 3:
+                        intent.putExtra(MultiFileSelectorActivity.TYPE_SELECT, File.TYPE_MEDIANONE);
+                        startActivityForResult(intent, File.TYPE_MEDIANONE);
+                        break;
+                    case 4:
+                        intent.putExtra(MultiFileSelectorActivity.TYPE_SELECT, File.TYPE_ALL);
+                        startActivityForResult(intent, File.TYPE_ALL);
                         break;
                 }
-                startActivity(intent);
             }
         });
     }

@@ -32,7 +32,9 @@ import com.hochan.sqlite.data.Worker;
 import com.hochan.sqlite.sql.SqliteHelper;
 import com.hochan.sqlite.tools.GetLocalImageByUri;
 import com.hochan.sqlite.tools.MyApplication;
+import com.hochan.sqlite.tools.SQLHttpClient;
 import com.hochan.sqlite.tools.ScreenTools;
+import com.hochan.sqlite.tools.Tool;
 
 /**
  * Created by Administrator on 2016/4/12.
@@ -51,7 +53,7 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
     private View mView, mRootView;
     private Context mContext;
     private Button btnDelete, btnEdit, btnCancle, btnPicture, btnUpload;
-    private EditText edId, edNickName, edPassword; // edWorkState;
+    private EditText edId, edNickName, edPassword, edWorkState;
     //private RadioGroup rgWorkState;
     private ImageView ivImage;
     private String mName, mPhoneNumber, mTowerNumber, mWorkState;
@@ -62,15 +64,16 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
 
     private AnimationSet mDialogInAnim;
 
-    public static EditDialogFragment newInstance(int tag, String name, String phoneNumber,
-                                                 String towerNumber, String workState, int position){
+    public static EditDialogFragment newInstance(int tag, String name, String id,
+                                                 String password, String workState, int position){
         EditDialogFragment editDialogFragment = new EditDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(TAG, tag);
+        bundle.putString(SqliteHelper.ID, id);
         bundle.putString(SqliteHelper.NICKNAME, name);
-        bundle.putString(SqliteHelper.PASSWORD, phoneNumber);
+        bundle.putString(SqliteHelper.PASSWORD, password);
         //bundle.putString(SqliteHelper.TOWER_NUMBER, towerNumber);
-        //bundle.putString(SqliteHelper.WORK_STATE, workState);
+        bundle.putString(SqliteHelper.WORK_STATE, workState);
         bundle.putInt(POSITION, position);
         editDialogFragment.setArguments(bundle);
         return editDialogFragment;
@@ -112,9 +115,8 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
         super.onStart();
         System.out.println(TAG + "onStart!");
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));//注意此处
-        //mRootView.startAnimation();
-        //getDialog().getWindow().setLayout((int) (MyApplication.mWidthOfDialog), WindowManager.LayoutParams.WRAP_CONTENT);//这2行,和上面的一样,注意顺序就行;
-        getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);//这2行,和上面的一样,注意顺序就行;
+        getDialog().getWindow().setLayout((int) (MyApplication.mWidthOfDialog), WindowManager.LayoutParams.WRAP_CONTENT);//这2行,和上面的一样,注意顺序就行;
+        //getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);//这2行,和上面的一样,注意顺序就行;
         //mRootView.startAnimation(mDialogInAnim);
     }
 
@@ -134,6 +136,7 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
         btnPicture = (Button) mView.findViewById(R.id.btn_picture);
         ivImage = (ImageView) mView.findViewById(R.id.iv_image);
 
+        edWorkState = (EditText) mView.findViewById(R.id.ed_status);
         edId = (EditText) mView.findViewById(R.id.ed_id);
         edNickName = (EditText) mView.findViewById(R.id.ed_nick_name);
         edPassword = (EditText) mView.findViewById(R.id.ed_password);
@@ -149,8 +152,12 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
             btnUpload.setVisibility(View.GONE);
             //Toast.makeText(mContext, "增加", Toast.LENGTH_LONG).show();
         }else{
+            edId.setText(getArguments().getString(SqliteHelper.ID));
+            edNickName.setText(getArguments().getString(SqliteHelper.NICKNAME));
+            edPassword.setText(getArguments().getString(SqliteHelper.PASSWORD));
+            edWorkState.setText(getArguments().getString(SqliteHelper.WORK_STATE));
+            btnUpload.setVisibility(View.GONE);
             btnDelete.setVisibility(View.VISIBLE);
-            btnUpload.setVisibility(View.VISIBLE);
             btnEdit.setText("修改");
             btnDelete.setOnClickListener(this);
             btnCancle.setOnClickListener(this);
@@ -181,10 +188,11 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
                     }
 
                     Worker worker = new Worker();
-                    worker.setmName(edId.getText().toString());
-                    worker.setmPhoneNumber(edNickName.getText().toString());
-                    worker.setmTowerNumber(edPassword.getText().toString());
-                    worker.setmWorkState(mWorkStateFromRG);
+                    worker.setmID(edId.getText().toString());
+                    worker.setmName(edNickName.getText().toString());
+                    worker.setmPassword(edPassword.getText().toString());
+                    worker.setmWorkState(edWorkState.getText().toString());
+                    worker.setmDateTime(Tool.getDateTime());
                     mOnDialogListener.clicked(EDIT, worker, mPosition);
                     if(mTag == DELETEEDIT_DIALOG)
                         dismiss();

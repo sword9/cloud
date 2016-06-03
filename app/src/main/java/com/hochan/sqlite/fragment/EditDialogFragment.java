@@ -243,8 +243,7 @@ public class EditDialogFragment extends DialogFragment implements View.OnClickLi
         System.out.println(TAG+ "data："+data.getDataString());
         Uri uri = data.getData();
         btnPicture.setText(uri.toString());
-        ScreenTools screenTools = ScreenTools.instance(mContext);
-        final int widthOfDialogWindow = MyApplication.mWidthOfScreen - screenTools.dip2px(15*2);
+        final int widthOfDialogWindow = MyApplication.mWidthOfScreen - ScreenTools.dip2px(15*2, mContext);
         GetLocalImageByUri getLocalImageByUri = new GetLocalImageByUri(mContext){
             @Override
             protected void onPostExecute(Bitmap bitmap) {

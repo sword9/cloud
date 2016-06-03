@@ -40,8 +40,8 @@ public class GetLocalImageByUri extends AsyncTask<Uri, Void, Bitmap> {
             e.printStackTrace();
         }
         System.out.println(TAG + "options.outWidth：" + options.outWidth);
-        ScreenTools screenTools = ScreenTools.instance(mContext);
-        int widthOfDialogWindow = MyApplication.mWidthOfScreen - screenTools.dip2px(15);
+
+        int widthOfDialogWindow = MyApplication.mWidthOfScreen - ScreenTools.dip2px(15, mContext);
         System.out.println(TAG+"widthOfDialogWindow："+widthOfDialogWindow);
         options.inSampleSize = (int) (options.outWidth/widthOfDialogWindow*1.0);
         options.inJustDecodeBounds = false;

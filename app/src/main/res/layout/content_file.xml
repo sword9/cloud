@@ -8,6 +8,16 @@
     tools:context="com.hochan.sqlite.FileActivity"
     tools:showIn="@layout/activity_file">
 
+    <RelativeLayout
+        android:id="@+id/rl_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recy_download"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <Button
         android:id="@+id/btn_upload_files"
         android:layout_alignParentBottom="true"

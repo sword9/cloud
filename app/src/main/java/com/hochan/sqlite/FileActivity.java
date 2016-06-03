@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ListPopupWindow;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
@@ -16,8 +17,8 @@ import android.widget.Button;
 
 import com.hochan.multi_file_selector.MultiFileSelectorActivity;
 import com.hochan.multi_file_selector.data.File;
-import com.hochan.sqlite.multi_images_selector.MultiImageSelectorActivity;
-import com.hochan.sqlite.multi_images_selector.utils.ScreenUtils;
+import com.hochan.sqlite.fragment.FileFragment;
+import com.hochan.sqlite.tools.ScreenTools;
 
 import java.util.ArrayList;
 
@@ -26,8 +27,11 @@ public class FileActivity extends AppCompatActivity {
 
     private Button btnUpload;
     private ListPopupWindow mListPopupWindow;
+    private RecyclerView recyDownload;
     private ArrayList<String> mUploadFileType;
     private ArrayAdapter<String> mFileTypeAdater;
+
+    private FileFragment mFileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,8 @@ public class FileActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        recyDownload = (RecyclerView) findViewById(R.id.recy_download);
 
         btnUpload = (Button) findViewById(R.id.btn_upload_files);
         btnUpload.setOnClickListener(new View.OnClickListener() {
@@ -63,12 +69,20 @@ public class FileActivity extends AppCompatActivity {
 
             }
         });
+
+        mFileFragment = (FileFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.rl_container);
+        if(mFileFragment == null){
+            mFileFragment = FileFragment.newInstance();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.rl_container, mFileFragment).commit();
+        }
     }
 
     private void createPopupWindow(){
         System.out.println("创建弹出窗口");
-        Point point = ScreenUtils.getScreenSize(this);
-        int width = point.x;
+        int width  = ScreenTools.getScreenWidth(this);
+
 
         mListPopupWindow = new ListPopupWindow(this);
         mListPopupWindow.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorBackground)));

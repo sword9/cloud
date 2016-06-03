@@ -22,6 +22,8 @@ public class SQLHttpClient{
     public final static String SYNC_UPLOAD = "http://192.168.1.140:8080/d";
     public final static String SYNC_DOWNLOAD = "http://192.168.1.140:8080/c";
 
+    public final static String GET_FILE = "http://192.168.1.157:8080/fechDirectory";
+
     private static AsyncHttpClient mClient = new AsyncHttpClient();
 
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {

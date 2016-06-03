@@ -13,8 +13,7 @@ public class MyApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        ScreenTools screenTools = ScreenTools.instance(getApplicationContext());
-        mWidthOfScreen = screenTools.getScreenWidth();
+        mWidthOfScreen = ScreenTools.getScreenWidth(getApplicationContext());
         mWidthOfDialog = (int) (mWidthOfScreen*0.9);
     }
 }

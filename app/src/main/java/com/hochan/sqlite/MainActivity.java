@@ -25,6 +25,7 @@ import com.hochan.sqlite.fragment.EditDialogFragment;
 import com.hochan.sqlite.fragment.LoginFragment;
 import com.hochan.sqlite.fragment.SearchDialogFragment;
 import com.hochan.sqlite.fragment.WorkersListFragment;
+import com.hochan.sqlite.service.DownloadService;
 import com.hochan.sqlite.sql.DataHelper;
 import com.hochan.sqlite.tools.ClientThread;
 import com.hochan.sqlite.tools.DataHandler;
@@ -290,6 +291,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
                 break;
+            case R.id.action_download_manager:
+                Intent downloadIntent = new Intent(this, DownloadManagerActivity.class);
+                startActivity(downloadIntent);
         }
         return true;
     }

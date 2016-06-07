@@ -59,7 +59,10 @@ public class DownloadTaskDataHelper {
             values.put(SqliteHelper.URL, downloadInfo.getmUrl());
             values.put(SqliteHelper.NAME, downloadInfo.getmName());
             values.put(SqliteHelper.PATH, downloadInfo.getmStoragePath());
-            values.put(SqliteHelper.STATE, downloadInfo.getmState());
+            if(downloadInfo.getmState() == DownloadInfo.STATE_LOADING)
+                values.put(SqliteHelper.STATE, DownloadInfo.STATE_UNFINISHED);
+            else
+                values.put(SqliteHelper.STATE, downloadInfo.getmState());
             values.put(SqliteHelper.TOTAL_SIZE, downloadInfo.getmTotalSize());
             if(hasDownloadTask(context, downloadInfo)){
                 sqLiteDatabase.update(SqliteHelper.TB_DOWNLOAD_TASK, values, SqliteHelper.URL + "=?", new String[]{downloadInfo.getmUrl()});

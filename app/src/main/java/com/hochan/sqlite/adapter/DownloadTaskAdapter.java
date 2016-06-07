@@ -68,6 +68,23 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter{
         }else{
             viewHolder.llControl.setVisibility(View.GONE);
         }
+        switch (downloadInfo.getmState()){
+            case DownloadInfo.STATE_LOADING:
+                viewHolder.tvFinish.setVisibility(View.GONE);
+                viewHolder.mProgressBar.setVisibility(View.VISIBLE);
+                viewHolder.tvUrl.setText(downloadInfo.getmUrl());
+                viewHolder.btnCancle.setText("取消");
+                break;
+            case DownloadInfo.STATE_FINISHED:
+                viewHolder.mProgressBar.setVisibility(View.GONE);
+                viewHolder.tvFinish.setVisibility(View.VISIBLE);
+                viewHolder.tvUrl.setText(downloadInfo.getmStoragePath());
+                viewHolder.btnCancle.setText("删除");
+                break;
+            case DownloadInfo.STATE_UNFINISHED:
+
+                break;
+        }
         if(downloadInfo.getmDownloadedSize() == downloadInfo.getmTotalSize()){
             viewHolder.mProgressBar.setVisibility(View.GONE);
             viewHolder.tvFinish.setVisibility(View.VISIBLE);

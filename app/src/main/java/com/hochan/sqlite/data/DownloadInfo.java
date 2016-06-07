@@ -9,10 +9,10 @@ import java.util.concurrent.Future;
  */
 public class DownloadInfo {
 
-    public static int STATE_LOADING = 0;
-    public static int STATE_CANCLED = 1;
-    public static int STATE_FINISHED = 2;
-    public static int STATE_UNFINISHED = 3;
+    public static final int STATE_LOADING = 0;
+    public static final int STATE_CANCLED = 1;
+    public static final int STATE_FINISHED = 2;
+    public static final int STATE_UNFINISHED = 3;
 
     private String mUrl;
     private String mName;

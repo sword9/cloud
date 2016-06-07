@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 
 import com.hochan.sqlite.data.DownloadInfo;
+import com.hochan.sqlite.sql.DownloadTaskDataHelper;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.ProgressCallback;
 
@@ -38,8 +39,8 @@ public class DownloadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        System.out.println(flags);
-        System.out.println(startId);
+        //System.out.println(flags);
+        //System.out.println(startId);
         String url = intent.getStringExtra(URL);
         if(url == null){
             System.out.println("已启动");
@@ -49,11 +50,16 @@ public class DownloadService extends Service {
         mDownloadUrls.add(url);
         System.out.println(url);
         String name = url.substring(url.lastIndexOf("/")+1, url.length());
-        String path = this.getCacheDir() + name;
+
+        String directory = this.getCacheDir() + "/download";
+        String path = directory + "/" + name;
 
         System.out.println(path);
-        File file = new File(path);
+        File dr  = new File(directory);
+        if (!dr.exists())
+            dr.mkdir();
 
+        File file = new File(path);
         mDownloadCount++;
         final DownloadInfo downloadInfo = new DownloadInfo(url, name, path);
         final int index = mDownloadCount-1;
@@ -68,7 +74,11 @@ public class DownloadService extends Service {
                         downloadInfo.setmDownloadedSize(downloaded);
                         if(downloaded == total){
                             downloadInfo.setmIsFinished(true);
+                            downloadInfo.setmState(DownloadInfo.STATE_FINISHED);
+                            //DownloadTaskDataHelper.saveDownloadTask(DownloadService.this, downloadInfo);
                         }
+                        else
+                        downloadInfo.setmState(DownloadInfo.STATE_LOADING);
                         if(mListener != null) {
                             mListener.progress(index, downloaded, total);
                         }
@@ -78,6 +88,7 @@ public class DownloadService extends Service {
         downloadInfo.setmDownloading(downloading);
         mDownloadList.put(url, downloadInfo);
         //System.out.println(url+" "+path);
+        //DownloadTaskDataHelper.saveDownloadTask(this, downloadInfo);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -89,6 +100,7 @@ public class DownloadService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        DownloadTaskDataHelper.saveDownloadTaskList(this, mDownloadList, mDownloadUrls);
     }
 
     public List<String> getDownloadUrls(){

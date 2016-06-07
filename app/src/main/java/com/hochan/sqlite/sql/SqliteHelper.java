@@ -9,7 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class SqliteHelper extends SQLiteOpenHelper {
 
+    public static int TB_VERSION = 3;
+
     public final static String TB_NAME = "worker";
+    public final static String TB_DOWNLOAD_TASK = "download_task";
+
     public final static String ID = "_id";
     //public final static String NAME = "姓名";
     //public final static String PHONE_NUMBER = "电话";
@@ -19,6 +23,13 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public static final String NICKNAME = "昵称";
     public static final String PASSWORD = "密码";
     public static final String WORK_STATE = "工作状态";
+
+    public static final String URL = "url";
+    public static final String NAME = "name";
+    public static final String PATH = "path";
+    public static final String STATE = "state";
+    public static final String TOTAL_SIZE = "total_size";
+    public static final String DOWNLOADED_SIZE = "downloaded_size";
 
     public SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -35,6 +46,16 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 //TOWER_NUMBER + " varchar," +
                 WORK_STATE + " varchar," +
                 TIME_STAMP + " timestamp NOT NULL" +
+                ")");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_DOWNLOAD_TASK + "(" +
+                ID + " varchar primary key," +
+                URL + " varchar," +
+                NAME + " varchar," +
+                PATH + " varchar," +
+                STATE + " int," +
+                TOTAL_SIZE + " bigint," +
+                DOWNLOADED_SIZE + " bigint" +
                 ")");
     }
 

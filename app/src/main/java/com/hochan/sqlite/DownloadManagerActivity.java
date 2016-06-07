@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import com.hochan.sqlite.adapter.DownloadTaskAdapter;
 import com.hochan.sqlite.data.DownloadInfo;
 import com.hochan.sqlite.service.DownloadService;
+import com.hochan.sqlite.sql.DownloadTaskDataHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,9 +43,21 @@ public class DownloadManagerActivity extends AppCompatActivity {
                     }
                 }
             });
-            mDownloadUrls = mDownloadService.getDownloadUrls();
-            mDownloadTaskList = mDownloadService.getDownloadList();
-            mAdapter.setDownloadTasks(mDownloadUrls, mDownloadTaskList);
+            int start = mDownloadUrls.size();
+            for(String url : mDownloadService.getDownloadUrls()){
+                if(mDownloadUrls.contains(url)){
+                    mDownloadTaskList.remove(url);
+                    mDownloadTaskList.put(url, mDownloadService.getDownloadList().get(url));
+                }
+                else {
+                    mDownloadUrls.add(url);
+                    mDownloadTaskList.put(url, mDownloadService.getDownloadList().get(url));
+                }
+            }
+            //mDownloadUrls = mDownloadService.getDownloadUrls();
+            //mDownloadTaskList = mDownloadService.getDownloadList();
+            //mAdapter.setDownloadTasks(mDownloadUrls, mDownloadTaskList);
+            mAdapter.notifyItemRangeChanged(start, mDownloadUrls.size());
         }
 
         @Override
@@ -59,17 +73,18 @@ public class DownloadManagerActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mDownloadTaskList = DownloadTaskDataHelper.getDownloadTasks(this, mDownloadUrls);
+        System.out.println("从数据库读取的下载任务数目："+mDownloadUrls.size());
+
         recyDownloadTask = (RecyclerView) findViewById(R.id.recy_download_task);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyDownloadTask.setLayoutManager(linearLayoutManager);
         mAdapter = new DownloadTaskAdapter(this);
+        mAdapter.setDownloadTasks(mDownloadUrls, mDownloadTaskList);
         recyDownloadTask.setAdapter(mAdapter);
 
         Intent intent = new Intent(this, DownloadService.class);
         startService(intent);
         bindService(intent, mServiceConn, 0);
     }
-
-
-
 }

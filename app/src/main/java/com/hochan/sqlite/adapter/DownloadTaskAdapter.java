@@ -5,7 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -15,6 +17,8 @@ import com.hochan.sqlite.R;
 import com.hochan.sqlite.data.DownloadInfo;
 import com.hochan.sqlite.tools.Tool;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +28,13 @@ import java.util.List;
  */
 public class DownloadTaskAdapter extends RecyclerView.Adapter{
 
+    private static final String TAG = "DownloadTaskAdapter";
+
     private Context mContext;
     private List<String> mDownloadUrls = new ArrayList<>();
     private HashMap<String, DownloadInfo> mDownloadTasks = new HashMap<>();
+    private DownloadInfo mExpandItem;
+    private int mExpandPositon = 0;
 
     public DownloadTaskAdapter(Context context){
         this.mContext = context;
@@ -35,6 +43,8 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter{
     public void setDownloadTasks(List<String> downloadUrls, HashMap<String, DownloadInfo> downloadTaskList){
         this.mDownloadUrls = downloadUrls;
         this.mDownloadTasks = downloadTaskList;
+        System.out.println(TAG+":"+"mDownloadUrls.size():"+mDownloadUrls.size());
+        System.out.println(TAG+":"+"mDownloadTasks.size():"+mDownloadTasks.size());
         notifyDataSetChanged();
     }
 
@@ -53,14 +63,21 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter{
         viewHolder.tvSize.setText(Tool.getSizeFormat(downloadInfo.getmTotalSize()));
         viewHolder.mProgressBar.setMax((int) downloadInfo.getmTotalSize());
         viewHolder.mProgressBar.setProgress((int) downloadInfo.getmDownloadedSize());
+        if(mDownloadTasks.get(mDownloadUrls.get(position)).equals(mExpandItem)){
+            viewHolder.llControl.setVisibility(View.VISIBLE);
+        }else{
+            viewHolder.llControl.setVisibility(View.GONE);
+        }
         if(downloadInfo.getmDownloadedSize() == downloadInfo.getmTotalSize()){
             viewHolder.mProgressBar.setVisibility(View.GONE);
             viewHolder.tvFinish.setVisibility(View.VISIBLE);
             viewHolder.tvUrl.setText(downloadInfo.getmStoragePath());
+            viewHolder.btnCancle.setText("删除");
         }else{
             viewHolder.tvFinish.setVisibility(View.GONE);
             viewHolder.mProgressBar.setVisibility(View.VISIBLE);
             viewHolder.tvUrl.setText(downloadInfo.getmUrl());
+            viewHolder.btnCancle.setText("取消");
         }
     }
 
@@ -69,11 +86,13 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter{
         return mDownloadUrls.size();
     }
 
-    class DownloadTaskViewHolder extends RecyclerView.ViewHolder {
+    class DownloadTaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public ImageView ivIcon;
         public TextView tvName, tvUrl, tvSize, tvFinish;
         public ProgressBar mProgressBar;
+        public LinearLayout llDownloadTaskInfo, llControl;
+        public Button btnRestart, btnCancle, btnDelete;
 
         public DownloadTaskViewHolder(View itemView) {
             super(itemView);
@@ -83,6 +102,39 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter{
             tvUrl = (TextView) itemView.findViewById(R.id.tv_url);
             tvFinish = (TextView) itemView.findViewById(R.id.tv_finish);
             mProgressBar = (ProgressBar) itemView.findViewById(R.id.progress);
+
+            llDownloadTaskInfo = (LinearLayout) itemView.findViewById(R.id.ll_download_task_info);
+            llControl = (LinearLayout) itemView.findViewById(R.id.ll_control);
+
+            btnRestart = (Button) itemView.findViewById(R.id.btn_restart);
+            btnCancle = (Button) itemView.findViewById(R.id.btn_cancle);
+
+            llDownloadTaskInfo.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.ll_download_task_info:
+                    if(mDownloadTasks.get(mDownloadUrls.get(getPosition())).equals(mExpandItem))
+                        mExpandItem = null;
+                    else
+                        mExpandItem = mDownloadTasks.get(mDownloadUrls.get(getPosition()));
+                    notifyItemChanged(getPosition());
+                    notifyItemChanged(mExpandPositon);
+                    mExpandPositon = getPosition();
+                    break;
+                case R.id.btn_restart:
+                    break;
+                case R.id.btn_cancle:
+                    DownloadInfo downloadInfo = mDownloadTasks.get(mDownloadUrls.get(getPosition()));
+                    if(downloadInfo.getmTotalSize() == downloadInfo.getmDownloadedSize()){
+                        File file = new File(downloadInfo.getmStoragePath());
+                        if(file.exists())
+                            file.delete();
+                    }
+                    break;
+            }
         }
     }
 }

@@ -24,7 +24,7 @@ import java.util.Map;
 public class DataHelper {
 
     //数据库名称
-    private static String DB_NAME = "power_tower.db";
+    public static String DB_NAME = "power_tower.db";
     //数据库版本
     private static int DB_VERSION = 3;
     private SQLiteDatabase db;

@@ -2,13 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tool="http://schemas.android.com/tools"
     android:orientation="vertical">
     <LinearLayout
+        android:id="@+id/ll_download_task_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        xmlns:tool="http://schemas.android.com/tools"
         android:orientation="horizontal"
-        android:gravity="center_vertical" >
+        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/iv_icon"
@@ -71,16 +73,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:id="@+id/ll_control">
         <Button
+            android:id="@+id/btn_restart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="重新下载"/>
+            android:text="重新下载"
+            android:background="?android:attr/selectableItemBackground"/>
         <Button
+            android:id="@+id/btn_cancle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
             android:text="取消"/>
     </LinearLayout>
 </LinearLayout>

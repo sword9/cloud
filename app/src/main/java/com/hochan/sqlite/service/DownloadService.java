@@ -99,8 +99,9 @@ public class DownloadService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        System.out.println("DownloadService Destroy!");
         DownloadTaskDataHelper.saveDownloadTaskList(this, mDownloadList, mDownloadUrls);
+        super.onDestroy();
     }
 
     public List<String> getDownloadUrls(){

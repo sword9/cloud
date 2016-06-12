@@ -37,7 +37,7 @@ public class DownloadManagerActivity extends AppCompatActivity {
             mDownloadService.setDownloadListener(new DownloadService.DownloadServiceListener() {
                 @Override
                 public void progress(int index, long downloaded, long total) {
-                    System.out.println("下载管理器:"+index+" "+downloaded+" "+total);
+                    //System.out.println("下载管理器:"+index+" "+downloaded+" "+total);
                     if(mAdapter.getItemCount() > index){
                         mAdapter.notifyItemChanged(index);
                     }
@@ -86,5 +86,10 @@ public class DownloadManagerActivity extends AppCompatActivity {
         Intent intent = new Intent(this, DownloadService.class);
         startService(intent);
         bindService(intent, mServiceConn, 0);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 }

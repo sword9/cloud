@@ -51,6 +51,7 @@ public class DownloadTaskDataHelper {
     }
 
     public static void saveDownloadTaskList(Context context, HashMap<String, DownloadInfo> downloadTaskList, List<String> downloadUrls){
+        System.out.println("保存下载列表");
         SqliteHelper sqliteHelper = new SqliteHelper(context, DataHelper.DB_NAME, null, SqliteHelper.TB_VERSION);
         SQLiteDatabase sqLiteDatabase = sqliteHelper.getWritableDatabase();
         for(String url : downloadUrls){

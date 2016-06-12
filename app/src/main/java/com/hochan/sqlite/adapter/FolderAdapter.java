@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.std.StdArraySerializers;
@@ -149,6 +150,7 @@ public class FolderAdapter extends RecyclerView.Adapter{
             Intent intent = new Intent(mContext, DownloadService.class);
             intent.putExtra(DownloadService.URL, mUrls.get(getPosition()));
             mContext.startService(intent);
+            Toast.makeText(mContext, "已添加至下载", Toast.LENGTH_SHORT).show();
 //            SFile sFile = mSFiles.get(getPosition());
 //            if(sFile.ismIsDirectory()){
 //                mCurentParentPath = sFile.getmAbsolutePath();
@@ -156,7 +158,6 @@ public class FolderAdapter extends RecyclerView.Adapter{
 //            }else{
 //
 //            }
-
         }
     }
 }

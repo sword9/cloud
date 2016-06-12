@@ -75,12 +75,12 @@ public class DownloadService extends Service {
                         if(downloaded == total){
                             downloadInfo.setmIsFinished(true);
                             downloadInfo.setmState(DownloadInfo.STATE_FINISHED);
-                            //DownloadTaskDataHelper.saveDownloadTask(DownloadService.this, downloadInfo);
+                            DownloadTaskDataHelper.saveDownloadTask(DownloadService.this, downloadInfo);
                         }
                         else
                         downloadInfo.setmState(DownloadInfo.STATE_LOADING);
                         if(mListener != null) {
-                            mListener.progress(index, downloaded, total);
+                            mListener.progress(downloadInfo.getmUrl(), downloaded, total);
                         }
                     }
                 })
@@ -88,7 +88,7 @@ public class DownloadService extends Service {
         downloadInfo.setmDownloading(downloading);
         mDownloadList.put(url, downloadInfo);
         //System.out.println(url+" "+path);
-        //DownloadTaskDataHelper.saveDownloadTask(this, downloadInfo);
+        DownloadTaskDataHelper.saveDownloadTask(this, downloadInfo);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -124,6 +124,6 @@ public class DownloadService extends Service {
     }
 
     public interface DownloadServiceListener{
-        void progress(int index, long downloaded, long total);
+        void progress(String url, long downloaded, long total);
     }
 }

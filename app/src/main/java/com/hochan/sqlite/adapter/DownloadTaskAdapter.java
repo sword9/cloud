@@ -68,6 +68,7 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter{
         }else{
             viewHolder.llControl.setVisibility(View.GONE);
         }
+        System.out.println("-----------"+downloadInfo.getmState()+" "+downloadInfo.getmUrl());
         switch (downloadInfo.getmState()){
             case DownloadInfo.STATE_LOADING:
                 viewHolder.tvFinish.setVisibility(View.GONE);
@@ -79,22 +80,16 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter{
                 viewHolder.mProgressBar.setVisibility(View.GONE);
                 viewHolder.tvFinish.setVisibility(View.VISIBLE);
                 viewHolder.tvUrl.setText(downloadInfo.getmStoragePath());
+                viewHolder.tvFinish.setText("已完成");
                 viewHolder.btnCancle.setText("删除");
                 break;
             case DownloadInfo.STATE_UNFINISHED:
-
+                viewHolder.mProgressBar.setVisibility(View.GONE);
+                viewHolder.tvFinish.setVisibility(View.VISIBLE);
+                viewHolder.tvFinish.setText("未完成");
+                viewHolder.tvUrl.setText(downloadInfo.getmStoragePath());
+                viewHolder.btnCancle.setText("继续下载");
                 break;
-        }
-        if(downloadInfo.getmDownloadedSize() == downloadInfo.getmTotalSize()){
-            viewHolder.mProgressBar.setVisibility(View.GONE);
-            viewHolder.tvFinish.setVisibility(View.VISIBLE);
-            viewHolder.tvUrl.setText(downloadInfo.getmStoragePath());
-            viewHolder.btnCancle.setText("删除");
-        }else{
-            viewHolder.tvFinish.setVisibility(View.GONE);
-            viewHolder.mProgressBar.setVisibility(View.VISIBLE);
-            viewHolder.tvUrl.setText(downloadInfo.getmUrl());
-            viewHolder.btnCancle.setText("取消");
         }
     }
 

@@ -36,10 +36,10 @@ public class DownloadManagerActivity extends AppCompatActivity {
             mDownloadService = ((DownloadService.DownloadBinder) service).getService();
             mDownloadService.setDownloadListener(new DownloadService.DownloadServiceListener() {
                 @Override
-                public void progress(int index, long downloaded, long total) {
+                public void progress(String url, long downloaded, long total) {
                     //System.out.println("下载管理器:"+index+" "+downloaded+" "+total);
-                    if(mAdapter.getItemCount() > index){
-                        mAdapter.notifyItemChanged(index);
+                    if(mDownloadUrls.contains(url)){
+                        mAdapter.notifyItemChanged(mDownloadUrls.indexOf(url));
                     }
                 }
             });

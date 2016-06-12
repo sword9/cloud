@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
@@ -106,6 +107,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
             getSupportFragmentManager().beginTransaction().add(R.id.rl_workers_list, mWorkersListFragment, WorkersListFragment.TAG).commit();
         }
+
+        List<String> urls = new ArrayList<>();
+        urls.add("23");
+        urls.add("4156");
+        urls.add("85");
+        urls.add("25");
+        String a = "25";
+        System.out.println("------------------"+urls.contains(a));
+        System.out.println("-----------------"+urls.indexOf(a));
 //
 //        String str = "{\"id\":\"13349015\", \"name\":\"陈振东\", \"phone_num\":\"15622271342\"}";
 //        ObjectMapper objectMapper = new ObjectMapper();

@@ -37,7 +37,10 @@ public class DownloadTaskDataHelper {
         values.put(SqliteHelper.URL, downloadInfo.getmUrl());
         values.put(SqliteHelper.NAME, downloadInfo.getmName());
         values.put(SqliteHelper.PATH, downloadInfo.getmStoragePath());
-        values.put(SqliteHelper.STATE, downloadInfo.getmState());
+        if(downloadInfo.getmState() == DownloadInfo.STATE_LOADING)
+            values.put(SqliteHelper.STATE, DownloadInfo.STATE_UNFINISHED);
+        else
+            values.put(SqliteHelper.STATE, downloadInfo.getmState());
         values.put(SqliteHelper.TOTAL_SIZE, downloadInfo.getmTotalSize());
         long result = 0;
         if(hasDownloadTask(context, downloadInfo)){
@@ -94,6 +97,10 @@ public class DownloadTaskDataHelper {
             downloadInfo.setmState(state);
             downloadTasks.put(url, downloadInfo);
             downloadUrls.add(url);
+
+            System.out.println(url+" "+name+" "+path+" "+state+" "+totalSize);
+
+            cursor.moveToNext();
         }
         return (HashMap<String, DownloadInfo>) downloadTasks;
     }

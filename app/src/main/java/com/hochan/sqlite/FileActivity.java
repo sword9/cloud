@@ -1,10 +1,12 @@
 package com.hochan.sqlite;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
@@ -14,13 +16,27 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.hochan.multi_file_selector.MultiFileSelectorActivity;
+import com.hochan.multi_file_selector.MultiFileSelectorFragment;
 import com.hochan.multi_file_selector.data.File;
 import com.hochan.sqlite.fragment.FileFragment;
+import com.hochan.sqlite.service.UpLoadService;
+import com.hochan.sqlite.tools.SQLHttpClient;
 import com.hochan.sqlite.tools.ScreenTools;
+import com.hochan.sqlite.tools.Tool;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 
 public class FileActivity extends AppCompatActivity {
@@ -130,4 +146,19 @@ public class FileActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK)
+        {
+            ArrayList<String> stringList = new ArrayList<String>();
+            stringList = data.getStringArrayListExtra(MultiFileSelectorFragment.EXTRA_RESULT);
+            //耗时操作：启动上传service
+            Intent intent = new Intent(this, UpLoadService.class);
+            intent.putStringArrayListExtra(MultiFileSelectorFragment.EXTRA_RESULT,stringList);
+            Toast.makeText(this,"准备启动上传",Toast.LENGTH_SHORT).show();
+            this.startService(intent);
+            Toast.makeText(this,"已启动上传",Toast.LENGTH_SHORT).show();
+        }
+    }
 }

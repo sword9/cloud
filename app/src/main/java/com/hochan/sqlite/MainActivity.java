@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hochan.sqlite.UI.FileUI;
 import com.hochan.sqlite.data.Worker;
 import com.hochan.sqlite.fragment.EditDialogFragment;
 import com.hochan.sqlite.fragment.LoginFragment;
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
     private LoginFragment mLoginFragment, mSyncFragment;
 
+    static public Worker localWorker = new Worker();//客户端用户信息
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,28 +119,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String a = "25";
         System.out.println("------------------"+urls.contains(a));
         System.out.println("-----------------"+urls.indexOf(a));
-//
-//        String str = "{\"id\":\"13349015\", \"name\":\"陈振东\", \"phone_num\":\"15622271342\"}";
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        try {
-//            Worker worker = objectMapper.readValue(str, Worker.class);
-//            System.out.println("worker.getmID():"+worker.getmID());
-//            System.out.println("worker.getmName():"+worker.getmName());
-//            System.out.println("worker.getmPhoneNumber():"+worker.getmPhoneNumber());
-//            System.out.println("worker.getmTowerNumber():"+worker.getmTowerNumber());
-//            System.out.println("worker.getmWorkState():"+worker.getmWorkState());
-//
-//            String s = objectMapper.writeValueAsString(worker);
-//            System.out.println(s);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
     public void onClick(View v) {
         Intent intent = new Intent();
         switch (v.getId()){
+
+            //查询数据
             case R.id.btn_search:
                 //intent.setClass(this, SearchActivity.class);
                 SearchDialogFragment searchDialog = SearchDialogFragment.newInstance();
@@ -154,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 searchDialog.show(getSupportFragmentManager(), "search");
                 return;
+
+            //添加数据
             case R.id.btn_add:
                 mAddDialog = EditDialogFragment.newInstance(EditDialogFragment.ADD_DIALOG);
                 mAddDialog.setOnDialogListener(this);
@@ -196,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mWorkersListFragment.clear();
                 Toast.makeText(getApplicationContext(), "已清空表的记录", Toast.LENGTH_LONG).show();
                 break;
+            //获取用户数据
             case R.id.action_connect:
                 mLoginFragment = (LoginFragment) getSupportFragmentManager()
                         .findFragmentByTag(LoginFragment.TAG_LOGIN);
@@ -203,10 +195,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mLoginFragment = LoginFragment.newInstance(LoginFragment.TAG_LOGIN);
                 mLoginFragment.show(getSupportFragmentManager(), LoginFragment.TAG_LOGIN);
                 break;
-            case R.id.action_file:
+            //选择文件上传
+            /*case R.id.action_file:
                 Intent intent = new Intent(this, FileActivity.class);
                 startActivity(intent);
-                break;
+                break;*/
             //获取服务器所有数据
             case R.id.action_get_all:
                 SQLHttpClient.get(SQLHttpClient.GET_ALL, null, new JsonHttpResponseHandler(){
@@ -224,13 +217,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 break;
             //上传本地所有数据
-            case R.id.action_upload_all:
+/*            case R.id.action_upload_all:
                 DataHelper adataHelper = new DataHelper(this);
                 String[][] allWorkers = adataHelper.getAllWorkers();
                 adataHelper.close();
                 uploadWorkers(allWorkers);
-                break;
-            //增量同步
+                break;*/
+            /*//增量同步
             case R.id.action_sync_upload:
                 final DataHelper bdataHelper = new DataHelper(this);
                 String[][] results = bdataHelper.getTimeStamps();
@@ -300,10 +293,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                break;
+                break;*/
             case R.id.action_download_manager:
                 Intent downloadIntent = new Intent(this, DownloadManagerActivity.class);
                 startActivity(downloadIntent);
+                break;
+            case R.id.fileInCloud:
+                Intent fileIntent = new Intent(this, FileUI.class);
+                startActivity(fileIntent);
         }
         return true;
     }
@@ -343,10 +340,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ArrayList<Worker> workers = new ArrayList<Worker>();
         String[][] result = DataHandler.jsonArray2StringArray(jsonArray);
         for(int i = 0; i < result.length; i++){
-            System.out.println("解析："+result[i][0]);
-            System.out.println("解析："+result[i][1]);
-            System.out.println("解析："+result[i][2]);
-            System.out.println("解析："+result[i][3]);
             Worker worker = new Worker();
             worker.setmID(result[i][0]);
             worker.setmName(result[i][1]);

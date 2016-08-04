@@ -19,10 +19,12 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/5/21.
  */
+
+//上传文件中的所有文件
 public class AllFileAdapter extends RecyclerView.Adapter{
 
-    private File[] mFiles = new File[]{new File("/storage/sdcard0"), new File("/storage/sdcard1")};
-    private List<File> mSelectedFiled = new ArrayList<>();
+    private File[] mFiles = new File[]{new File("/storage/sdcard0"), new File("/storage/sdcard1")};    //sdcard0和sdcard1
+    private List<File> mSelectedFiled = new ArrayList<>();  //已选择文件
     private Context mContext;
     private MediaFileAdapterListener mAdapterListener;
 

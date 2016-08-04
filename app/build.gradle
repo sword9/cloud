@@ -6,8 +6,9 @@ android {
 
     defaultConfig {
         applicationId "com.hochan.sqlite"
-        minSdkVersion 9
-        targetSdkVersion 23
+        minSdkVersion 14
+        targetSdkVersion 14
+
         versionCode 1
         versionName "1.0"
     }
@@ -31,6 +32,7 @@ dependencies {
     compile 'com.android.support:support-v4:23.3.0'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile project(':filebroswer')
     compile project(':multi-file-selector')
     compile 'com.koushikdutta.ion:ion:2.1.7'
 }

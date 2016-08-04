@@ -37,6 +37,9 @@ import cz.msebera.android.httpclient.impl.client.SystemDefaultCredentialsProvide
 /**
  * Created by Administrator on 2016/6/3.
  */
+
+//文件下载界面fragment
+
 public class FolderAdapter extends RecyclerView.Adapter{
 
     private String mCurentParentPath;
@@ -75,6 +78,7 @@ public class FolderAdapter extends RecyclerView.Adapter{
         //return mSFiles.size();
     }
 
+    //访问服务器获取文件目录
     private void getFileList(){
         JSONObject jsonObject = new JSONObject();
         try {

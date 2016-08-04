@@ -92,4 +92,7 @@
         <item name="android:dropDownVerticalOffset">40.0dip</item>
         <item name="android:dropDownHorizontalOffset">-10dp</item>
     </style>
+    <style name="Theme.AppCompat.Light.NoActionBar" parent="@style/Theme.AppCompat.Light">
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>

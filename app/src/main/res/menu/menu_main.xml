@@ -16,13 +16,13 @@
         android:orderInCategory="100"
         app:showAsAction="never" />
 
-    <item
+    <!--<item
         android:id="@+id/action_upload_all"
         android:title="上传本地所有数据"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
-    <item
+    <!--<item
         android:id="@+id/action_sync_upload"
         android:title="增量上传数据"
         android:orderInCategory="100"
@@ -32,13 +32,13 @@
         android:id="@+id/action_sync_download"
         android:title="增量下载数据"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
-    <item
+    <!--<item
         android:id="@+id/action_file"
         android:title="查看个人云端文件"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
     <item
         android:id="@+id/action_clear"
@@ -49,6 +49,12 @@
     <item
         android:id="@+id/action_download_manager"
         android:title="下载管理"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/fileInCloud"
+        android:title="云端文件"
         android:orderInCategory="100"
         app:showAsAction="never" />
 

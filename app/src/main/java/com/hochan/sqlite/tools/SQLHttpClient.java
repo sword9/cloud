@@ -16,7 +16,7 @@ import cz.msebera.android.httpclient.HttpEntity;
  */
 public class SQLHttpClient{
 
-    public final static String BASE_URL = "http://192.168.1.40/";
+    public final static String BASE_URL = "http://222.200.166.138:8091/demo/";
     public final static String GET_ALL = "http://192.168.1.140:8080/a";
     public final static String UPLOAD_ALL = "http://192.168.1.140:8080/b";
     public final static String SYNC_UPLOAD = "http://192.168.1.140:8080/d";
@@ -28,6 +28,10 @@ public class SQLHttpClient{
 
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         mClient.get(url, params, responseHandler);
+    }
+
+    public static void addHeader(String header, String value){
+        mClient.addHeader(header, value);
     }
 
     public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {

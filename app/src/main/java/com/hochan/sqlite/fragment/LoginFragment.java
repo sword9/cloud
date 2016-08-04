@@ -58,6 +58,8 @@ public class LoginFragment extends DialogFragment implements View.OnClickListene
 
     private static final String TYPE = "type";
 
+
+
     public static LoginFragment newInstance(String type){
         LoginFragment loginFragment = new LoginFragment();
         Bundle bundle = new Bundle();
@@ -160,10 +162,18 @@ public class LoginFragment extends DialogFragment implements View.OnClickListene
             jsonObject.put("name", edName.getText().toString());
             jsonObject.put("password", edPassword.getText().toString());
             StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            SQLHttpClient.post(mContext, edUrl.getText().toString(), stringEntity, RequestParams.APPLICATION_JSON,
+            SQLHttpClient.post(mContext, SQLHttpClient.BASE_URL+"/register", stringEntity, RequestParams.APPLICATION_JSON,
                     new JsonHttpResponseHandler(){
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            //返回用户ID，将用户ID存起来
+
+
+                            if (statusCode != 200)
+                            {
+                                Toast.makeText(mContext, "获取失败", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
 
                         }
 

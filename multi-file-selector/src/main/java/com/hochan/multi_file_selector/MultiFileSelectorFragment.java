@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,7 +100,7 @@ public class MultiFileSelectorFragment extends Fragment
         rclvMediaFiles = (RecyclerView) view.findViewById(R.id.rclv_images);
         btnArtists = (Button) view.findViewById(R.id.btn_artists);
         //btnFolders = (Button) view.findViewById(R.id.btn_folders);
-        btnOpera = (Button) view.findViewById(R.id.btn_opera);
+        btnOpera = (Button) view.findViewById(R.id.btn_opera);   //完成按钮
         btnOpera.setText("取消");
 
         mFolderAdapter = new FolderAdapter(mContext);
@@ -226,6 +227,7 @@ public class MultiFileSelectorFragment extends Fragment
                 Folder folder = new Folder(File.TYPE_IMAGE, "所有图片", null, files);
                 folders.add(0, folder);
                 mFolderAdapter.setData(folders);
+                Log.d("finish", "finish");
                 System.out.println(files.size());
                 break;
             case File.TYPE_AUDIO:

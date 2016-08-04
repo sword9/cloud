@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+//利用socket访问网络 ,废弃
+
 public class ClientThread implements Runnable{
 
 	private Socket mSocket;

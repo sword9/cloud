@@ -35,8 +35,11 @@ public class SqliteHelper extends SQLiteOpenHelper {
         super(context, name, factory, version);
     }
 
+    //在调getReadableDatabase或getWritableDatabase时，会判断指定的数据库是否存在，
+    //不存在则调SQLiteDatabase.create创建， onCreate只在数据库第一次创建时才执行
     @Override
     public void onCreate(SQLiteDatabase db) {
+        //创建表worker
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + "(" +
                 ID + " varchar primary key," +
                 NICKNAME + " varchar," +
@@ -48,6 +51,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 TIME_STAMP + " timestamp NOT NULL" +
                 ")");
 
+        //创建表download_task
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_DOWNLOAD_TASK + "(" +
                 ID + " varchar primary key," +
                 URL + " varchar," +
